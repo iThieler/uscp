@@ -1,2 +1,2 @@
 # uscp
-Ultimate Server Controll Panel
+Ultimate Server Configuration Panel
