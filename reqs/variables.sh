@@ -1,5 +1,9 @@
 #!/bin/bash
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
+#################################
+##  R E Q U I E R E M E N T S  ##
+#################################
 var_githubraw="https://raw.githubusercontent.com/iThieler/uscp"
 var_logfile="/root/log_iThielers_USCP-Script.txt"
 var_whipbacktitle="© 2023 - iThieler's Ultimate Server Controllpanel (USCP)"
