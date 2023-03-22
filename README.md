@@ -1,7 +1,3 @@
-# uscp
-
-
-
 <h1 align="center" id="heading">Ultimate Server Configuration Panel</h1>
 
 <p align="center"><sub> Always remember to use due diligence when sourcing scripts and automation tasks from third-party sites. Primarily, I created this script to make setting up Servers easier and also faster for me. If you want to use a script, do it. </sub></p>
