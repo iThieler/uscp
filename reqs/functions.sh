@@ -1,5 +1,4 @@
 #!/bin/bash
-source <(curl -s ${var_githubraw}/main/reqs/variables.sh)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
 ################################
