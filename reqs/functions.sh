@@ -188,7 +188,7 @@ function WhipMessage() {
   # Call with: WhipMessage "title" "message"
   # ----------
   whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
-  echoLOG b "${2}"
+  EchoLog b "${2}"
 }
 
 function AlertWhipMessage() {
@@ -198,7 +198,7 @@ function AlertWhipMessage() {
   # ----------
   NEWT_COLORS_FILE=$AlertColorFile \
   whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
-  echoLOG r "${2}"
+  EchoLog r "${2}"
 }
 
 function WhipYesNo() {
@@ -219,7 +219,7 @@ function AlertWhipYesNo() {
   NEWT_COLORS_FILE=~/.iThielers_NEWT_COLORS_ALERT \
   whiptail --yesno --yes-button " ${1^^} " --no-button " ${2^^} " --backtitle "${var_whipbacktitle}" --title " ${3^^} " "${4}" 0 80
   yesno=$?
-  if [ ${yesno} -eq 0 ]; then echoLOG r "${4} ${var_color_blue}${1}${var_color_nc}"; else echoLOG r "${4} ${var_color_blue}${2}${var_color_nc}"; fi
+  if [ ${yesno} -eq 0 ]; then EchoLog r "${4} ${var_color_blue}${1}${var_color_nc}"; else EchoLog r "${4} ${var_color_blue}${2}${var_color_nc}"; fi
   if [ ${yesno} -eq 0 ]; then true; else false; fi
 }
 
