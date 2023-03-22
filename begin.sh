@@ -1,7 +1,19 @@
 #!/bin/bash
 
-source <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/reqs/variables.sh)
-source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+################################
+##      V A R I A B L E S     ##
+################################
+# Requierements
+export var_logfile="/root/log_USCP_Script.txt"
+export var_githubraw="https://raw.githubusercontent.com/iThieler/uscp"
+export var_whipbacktitle="© 2023 - iThieler's Ultimate Server Controllpanel (USCP)"
+
+# Colors
+export var_color_nc='\033[0m'
+export var_color_red='\033[1;31m'
+export var_color_blue='\033[1;34m'
+export var_color_green='\033[1;32m'
+export var_color_yellow='\033[1;33m'
 
 ################################
 ##   S C R I P T  L I S T S   ##
@@ -39,7 +51,10 @@ timedatectl set-timezone Europe/Berlin
 
 # Set User/GUI Language by User input
 export language=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\nSelect your Language" 20 80 10 "${langlist[@]}" 3>&1 1>&2 2>&3)
-source <(curl -s ${var_githubraw}/main/lang/${language}/begin.sh)
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
+
+# Load functions
+source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 
 ################################
 ## H O S T  V A R I A B L E S ##
