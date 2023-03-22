@@ -84,7 +84,7 @@ if command -v pveversion >/dev/null 2>&1; then
 fi
 
 # Check Debian 11 Bullseye
-if [ $OSVersion -eq 11 ]; then
+if [ $OSVersion -ne 11 ]; then
   AlertWhipMessage "${lang_erroros_title}" "${lang_erroros_message}"
   exit 1
 fi
