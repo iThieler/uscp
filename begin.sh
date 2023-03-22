@@ -68,8 +68,6 @@ PublicIP6=$(curl -6 -s icanhazip.com)
 GivenHostName="$(hostname | cut -d. -f1)"
 GivenDomainName=""
 if [[ ! "$(hostname | cut -d. -f2-9)" == "${GivenHostName}" ]]; then GivenDomainName="$(hostname | cut -d. -f2-9)"; fi
-HostName=$(WhipInputbox "${lang_hostname_title}" "${lang_hostname_message}" "${GivenHostName}")
-DomainName=$(WhipInputbox "${lang_domainname_title}" "${lang_domainname_message}" "${GivenDomainName}")
 
 ################################
 ##       C H E C K U P S      ##
@@ -99,6 +97,10 @@ fi
 ###############################
 ## Q U E S T I O N N A I R E ##
 ###############################
+# Hostname
+HostName=$(WhipInputbox "${lang_hostname_title}" "${lang_hostname_message}" "${GivenHostName}")
+DomainName=$(WhipInputbox "${lang_domainname_title}" "${lang_domainname_message}" "${GivenDomainName}")
+
 # Mailserver for notifications
 WhipMessage "${lang_mailserver_title}" "${lang_mailserver_messageboxtext}"
 MailServerFQDN=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfqdntext}" "mail.${DomainName}")
