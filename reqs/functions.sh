@@ -99,8 +99,26 @@ function CleanupAll() {
   # ----------
   # Call with: CleanupAll
   # ----------
-  cat /dev/null > ~/.bash_history && history -c && history -w
-  sleep 5
+  EchoLog wait "${lang_cleanupall_infomessage}"
+
+  if rm -r /tmp/*; then
+    EchoLog ok "${lang_cleanupall_cleantempfolder}"
+  else
+    EchoLog error "${lang_cleanupall_cleantempfolder}"
+    return 1
+  fi
+
+  sleep 2
+  
+  if history -c && history -w; then
+    EchoLog ok "${lang_cleanupall_historydata}"
+  else
+    EchoLog error "${lang_cleanupall_historydata}"
+    return 1
+  fi
+
+  sleep 3
+  return 0
 }
 
 ################################
