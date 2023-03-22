@@ -1,5 +1,5 @@
-root=lightgray,black
-roottext=lightgray,black
+root=lightgray,gray
+roottext=lightgray,gray
 window=lightgray,green
 title=lightgray,green
 border=gray,green
