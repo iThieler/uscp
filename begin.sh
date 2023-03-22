@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source <(curl -s ${var_githubraw}/main/reqs/variables.sh)
+source <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/reqs/variables.sh)
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 
 ################################
