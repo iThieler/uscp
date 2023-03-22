@@ -14,6 +14,9 @@ export var_color_blue='\033[1;34m'
 export var_color_green='\033[1;32m'
 export var_color_yellow='\033[1;33m'
 
+# Script needed
+ConfigRole=false
+
 ################################
 ##   S C R I P T  L I S T S   ##
 ################################
