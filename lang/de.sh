@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #######################################
 ##          b e g i n . S H          ##
 #######################################
@@ -46,16 +45,23 @@ lang_configurationcompleted_messageyesno="Soll ein entsprechender Auswahldialog 
 lang_selectserverrole_title="Serverrolle"
 lang_selectserverrole_message="Wähle eine Rolle für die der Server konfiguriert werden soll."
 
+lang_goodbye="Vielen Dank und bis zum nächsten mal :-)"
+
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
 #######################################
 # HELPER
-lang_updateupgrade_title="Systemupdate und Upgrade"
-lang_updateupgrade_mainmessage="Vollständiges Systemupdate wird vorbereitet ..."
-lang_updateupgrade_execmessage="Vollständiges Systemupdate wird ausgeführt ..."
 lang_checkip_title="IP-Adresse"
 lang_checkip_mainmessage="Die angegebene IP-Adresse ist nicht erreichbar. Bitte prüfen ..."
 lang_checkip_errormessage="Vorgang durch Benutzer abgebrochen, die IP-Adresse ist nicht erreichbar."
+lang_cleanupall_infomessage="Bereinige System"
+lang_cleanupall_cleantempfolder="Bereinigung des TEMP-Ordner"
+lang_cleanupall_historydata="Bereinigung der Shell-Verlaufsdaten"
+
+# SYSTEM WORK
+lang_updateupgrade_title="Systemupdate und Upgrade"
+lang_updateupgrade_mainmessage="Vollständiges Systemupdate wird vorbereitet ..."
+lang_updateupgrade_execmessage="Vollständiges Systemupdate wird ausgeführt ..."
 lang_backupandrestorefile_file="Die Datei"
 lang_backupandrestorefile_bakupfile="wurde gesichert in"
 lang_backupandrestorefile_restorefile="wurde wiederhergestellt in"
