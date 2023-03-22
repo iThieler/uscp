@@ -165,25 +165,43 @@ if $ConfigRole; then
   ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)
   if [[ $ServerRole == "dc" ]]; then
     # Config Docker Server with NGINX Proxy Manager
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
   elif [[ $ServerRole == "mc" ]]; then
     # Mailcow Mailserver
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
   elif [[ $ServerRole == "mp" ]]; then
     # MailPiler Mailarchiv
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
   elif [[ $ServerRole == "om" ]]; then
     # TP-Link Omada Software Controller
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
   elif [[ $ServerRole == "ww" ]]; then
     # Webserver based on NGINX with Let's Encrypt
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
   elif [[ $ServerRole == "no" ]]; then
     # Exit
     CleanupAll
+    EchoLog info "${lang_goodbye}"
     exit 0
   else
     # Failure - Cleanup an Exit
     CleanupAll
+    EchoLog info "${lang_goodbye}"
     exit 1
   fi
 else
   # No Server role desired
   CleanupAll
+  EchoLog info "${lang_goodbye}"
   exit 0
 fi
