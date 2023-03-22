@@ -54,7 +54,7 @@ lang_goodbye="Vielen Dank und bis zum nächsten mal :-)"
 lang_checkip_title="IP-Adresse"
 lang_checkip_mainmessage="Die angegebene IP-Adresse ist nicht erreichbar. Bitte prüfen ..."
 lang_checkip_errormessage="Vorgang durch Benutzer abgebrochen, die IP-Adresse ist nicht erreichbar."
-lang_cleanupall_infomessage="Bereinige System"
+lang_cleanupall_infomessage="Systembereinigung wird ausgeführt"
 lang_cleanupall_cleantempfolder="Bereinigung des TEMP-Ordner"
 lang_cleanupall_historydata="Bereinigung der Shell-Verlaufsdaten"
 
