@@ -51,6 +51,7 @@ source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
 # Load functions
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+HeaderLogo "Ultimate Server Configuration Panel"
 
 ################################
 ## H O S T  V A R I A B L E S ##
