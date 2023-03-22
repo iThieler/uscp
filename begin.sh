@@ -45,9 +45,6 @@ export NEWT_COLORS_FILE="/root/.iThielers_NEWT_COLORS"
 firstrun=true
 if [ -f "${var_logfile}" ]; then firstrun=false; fi
 
-# Set TimeZone
-timedatectl set-timezone Europe/Berlin
-
 # Set User/GUI Language by User input
 export language=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\nSelect your Language" 20 80 10 "${langlist[@]}" 3>&1 1>&2 2>&3)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
@@ -115,13 +112,20 @@ fi
 ###############################
 ##       S T A R T U P       ##
 ###############################
+# Set TimeZone
+timedatectl set-timezone Europe/Berlin
+
+# Set Hostname
+hostnamectl set-hostname "$HostName.$DomainName"
+sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName "$HostName.$DomainName"/" /etc/hosts
+
 # Install and configure Postfix as MTA
 if CheckPackage "postfix"; then
     EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
 else
   debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
   debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-  if apt install -y postfix 2>&1 >/dev/null; then
+  if apt-get install -y postfix 2>&1 >/dev/null; then
     EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
   else
     EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
@@ -129,7 +133,7 @@ else
 fi
 
 # Do a Full System update and upgrade if this is the Firstrun on this host
-EchoLog wait "${lang_updateupgrade_startup} >>> (apt update && apt upgrade)"
+EchoLog wait "${lang_updateupgrade_startup} >>> (apt-get update && apt-get upgrade)"
 if UpdateAndUpgrade; then
   EchoLog ok "${lang_updateupgrade_done}"
 else
@@ -141,7 +145,7 @@ for PACKAGE in fail2ban curl snapd git apticron parted smartmontools mailutils; 
   if CheckPackage "${PACKAGE}"; then
     EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
   else
-    if apt install -y $PACKAGE 2>&1 >/dev/null; then
+    if apt-get install -y $PACKAGE 2>&1 >/dev/null; then
       EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
     else
       EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
