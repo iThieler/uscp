@@ -45,7 +45,7 @@ lang_configurationcompleted_messageyesno="Soll ein entsprechender Auswahldialog 
 lang_selectserverrole_title="Serverrolle"
 lang_selectserverrole_message="Wähle eine Rolle für die der Server konfiguriert werden soll."
 
-lang_goodbye="Vielen Dank und bis zum nächsten mal :-)"
+lang_goodbye="Das war's, bis zum nächsten mal :-)"
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
