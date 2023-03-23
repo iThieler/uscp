@@ -45,7 +45,7 @@ lang_configurationcompleted_messageyesno="Should a corresponding selection dialo
 lang_selectserverrole_title="Server Role"
 lang_selectserverrole_message="Select a role for which the server should be configured."
 
-lang_goodbye="Thank you and see you next time :-)"
+lang_goodbye="That's it, see you next time :-)"
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
