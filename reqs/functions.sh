@@ -131,13 +131,13 @@ function UpdateAndUpgrade() {
   # ----------
   {
     echo -e "XXX\n12\n$lang_updateupgrade_execmessage\nXXX"
-    if ! apt update 2>&1 >/dev/null; then return 1; fi
+    if ! apt-get update 2>&1 >/dev/null; then return 1; fi
     echo -e "XXX\n35\n$lang_updateupgrade_execmessage\nXXX"
-    if ! apt upgrade -y 2>&1 >/dev/null; then return 1; fi
+    if ! apt-get upgrade -y 2>&1 >/dev/null; then return 1; fi
     echo -e "XXX\n51\n$lang_updateupgrade_execmessage\nXXX"
-    if ! apt dist-upgrade -y 2>&1 >/dev/null; then return 1; fi
+    if ! apt-get dist-upgrade -y 2>&1 >/dev/null; then return 1; fi
     echo -e "XXX\n74\n$lang_updateupgrade_execmessage\nXXX"
-    if ! apt autoremove -y 2>&1 >/dev/null; then return 1; fi
+    if ! apt-get autoremove -y 2>&1 >/dev/null; then return 1; fi
     echo -e "XXX\n98\n$lang_updateupgrade_execmessage\nXXX"
   } | whiptail --gauge --backtitle "${var_whipbacktitle}" --title " ${lang_updateupgrade_title^^} " "\n${lang_updateupgrade_mainmessage}" 10 80 0
   
