@@ -52,8 +52,9 @@ if [ -f "${var_logfile}" ]; then firstrun=false; fi
 export language=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\nSelect your Language" 20 80 10 "${langlist[@]}" 3>&1 1>&2 2>&3)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
-# Load functions
+# Load functions/updates and strt this script
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+apt-get update 2>&1 >/dev/null
 HeaderLogo "Ultimate Server Configuration Panel"
 
 ################################
@@ -124,7 +125,7 @@ timedatectl set-timezone Europe/Berlin
 
 # Set Hostname
 hostnamectl set-hostname "$HostName.$DomainName"
-sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName "$HostName.$DomainName"/" /etc/hosts
+sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
 
 # Install and configure Postfix as MTA
 if CheckPackage "postfix"; then
@@ -179,7 +180,7 @@ fi
 echo "root $MailServerFrom" >> /etc/postfix/canonical
 chmod 600 /etc/postfix/canonical
 echo [$MailServerFQDN]:$MailServerPort "$MailServerUser":"$MailServerPass" >> /etc/postfix/sasl_passwd
-chmod 600 /etc/postfix/sasl_passwd 
+chmod 600 /etc/postfix/sasl_passwd
 sed -i "/#/!s/\(relayhost[[:space:]]*=[[:space:]]*\)\(.*\)/\1"[$MailServerFQDN]:"$MailServerPort""/"  /etc/postfix/main.cf
 if [ $MailServerTLS ]; then
   postconf smtp_use_tls=yes
