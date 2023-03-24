@@ -130,8 +130,8 @@ cat > /root/answer_uscp_script.sh <<EOF
 ## Created on $(date)                                                            ##
 ###################################################################################
 # Host Variables
-HostName=$
-DomainName=$
+HostName=${HostName}
+DomainName=${DomainName}
 
 # Mailserver Variables
 MailServerFQDN=${MailServerFQDN}
@@ -155,20 +155,21 @@ hostnamectl set-hostname "$HostName.$DomainName"
 sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
 
 # Install and configure Postfix as MTA
-if CheckPackage "postfix"; then
-    EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
-else
-  debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
-  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-  if apt-get install -y postfix >/dev/null 2>&1; then
-    EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
+debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
+debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+if apt-get install -y postfix >/dev/null 2>&1; then
+  EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
+  if apt-get install mailutils >/dev/null 2>&1; then
+    EchoLog ok "mailutils - ${lang_softwaredependencies_installok}"
   else
-    EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
+    EchoLog error "mailutils - ${lang_softwaredependencies_installfail}"
   fi
+else
+  EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
 fi
 
 # Install Software dependencies 
-for PACKAGE in fail2ban curl snapd gnupg git ca-certificates apticron parted smartmontools mailutils; do
+for PACKAGE in fail2ban curl snapd gnupg git ca-certificates apticron smartmontools; do
   if CheckPackage "${PACKAGE}"; then
     EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
   else
