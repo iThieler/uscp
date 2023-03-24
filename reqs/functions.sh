@@ -154,9 +154,9 @@ function BackupAndRestoreFile() {
 
   if [[ "${1}" == "backup" ]]; then
     if [ -f "${file}.bak" ]; then
-      if ! rm "${file}.bak"; then return 1; fi
+      if ! rm "${file}.bak" 2>&1 >/dev/null; then return 1; fi
     fi
-    if cp "${file}" "${file}.bak"; then
+    if cp "${file}" "${file}.bak" 2>&1 >/dev/null; then
       EchoLog info "${lang_backupandrestorefile_file} ${file} ${lang_backupandrestorefile_bakupfile} ${file}.bak"
       return 0
     else
@@ -164,10 +164,10 @@ function BackupAndRestoreFile() {
     fi    
   elif [[ "${1}" == "restore" ]]; then
     if [ -f "${file}.bak" ]; then
-      if ! rm "${file}"; then return 1; fi
-      if cp "${file}.bak" "${file}"; then
+      if ! rm "${file}" 2>&1 >/dev/null; then return 1; fi
+      if cp "${file}.bak" "${file}" 2>&1 >/dev/null; then
         EchoLog info "${lang_backupandrestorefile_file} ${file}.bak ${lang_backupandrestorefile_restorefile} ${file}"
-        if rm "${file}.bak"; then
+        if rm "${file}.bak" 2>&1 >/dev/null; then
           EchoLog info "${lang_backupandrestorefile_deletebakfile} ${file}.bak"
         else
           return 1
