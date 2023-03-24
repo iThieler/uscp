@@ -280,5 +280,6 @@ else
   # No Server role desired
   CleanupAll
   EchoLog info "${lang_goodbye}"
+  EchoLog no "${lang_logfilepath} >> $var_logfile"
   exit 0
 fi
