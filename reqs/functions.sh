@@ -101,7 +101,7 @@ function CleanupAll() {
   # ----------
   EchoLog wait "${lang_cleanupall_infomessage}"
 
-  if rm -r /tmp/*; then
+  if rm -rf /tmp/*; then
     EchoLog ok "${lang_cleanupall_cleantempfolder}"
   else
     EchoLog error "${lang_cleanupall_cleantempfolder}"
@@ -154,7 +154,7 @@ function BackupAndRestoreFile() {
 
   if [[ "${1}" == "backup" ]]; then
     if [ -f "${file}.bak" ]; then
-      if ! rm "${file}.bak" 2>&1 >/dev/null; then return 1; fi
+      if ! rm -f "${file}.bak"; then return 1; fi
     fi
     if cp "${file}" "${file}.bak" 2>&1 >/dev/null; then
       EchoLog info "${lang_backupandrestorefile_file} ${file} ${lang_backupandrestorefile_bakupfile} ${file}.bak"
@@ -164,7 +164,7 @@ function BackupAndRestoreFile() {
     fi    
   elif [[ "${1}" == "restore" ]]; then
     if [ -f "${file}.bak" ]; then
-      if ! rm "${file}" 2>&1 >/dev/null; then return 1; fi
+      if ! rm -f "${file}" 2>&1 >/dev/null; then return 1; fi
       if cp "${file}.bak" "${file}" 2>&1 >/dev/null; then
         EchoLog info "${lang_backupandrestorefile_file} ${file}.bak ${lang_backupandrestorefile_restorefile} ${file}"
         if rm "${file}.bak" 2>&1 >/dev/null; then
