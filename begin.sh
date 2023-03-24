@@ -106,6 +106,7 @@ WhipMessage "${lang_mailserver_title}" "${lang_mailserver_messageboxtext}"
 MailServerFQDN=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfqdntext}" "mail.${DomainName}")
 MailServerPort=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverporttext}" "587")
 MailServerFrom=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfromtext}" "notify@${DomainName}")
+MailServerTo=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailservertotext}" "monitor@${DomainName}")
 MailServerUser=""
 MailServerPass=""
 MailServerTLS=false
@@ -129,21 +130,13 @@ sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName "$HostName.$DomainName"/" /etc/hosts
 if CheckPackage "postfix"; then
     EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
 else
-  debconf-set-selections <<< "postfix postfix/mailname string your.hostname.com"
+  debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
   debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
   if apt-get install -y postfix 2>&1 >/dev/null; then
     EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
   else
     EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
   fi
-fi
-
-# Do a Full System update and upgrade if this is the Firstrun on this host
-EchoLog wait "${lang_updateupgrade_startup} >>> (apt-get update && apt-get upgrade)"
-if UpdateAndUpgrade; then
-  EchoLog ok "${lang_updateupgrade_done}"
-else
-  EchoLog error "${lang_updateupgrade_fail}"
 fi
 
 # Install Software dependencies 
@@ -159,12 +152,91 @@ for PACKAGE in fail2ban curl snapd git apticron parted smartmontools mailutils; 
   fi
 done
 
-WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
-if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_title}" "${lang_configurationcompleted_messageyesno}"; then ConfigRole=true; fi
+# Do a Full System update and upgrade if this is the Firstrun on this host
+EchoLog wait "${lang_updateupgrade_startup} >>> (apt-get update && apt-get upgrade)"
+if UpdateAndUpgrade; then
+  EchoLog ok "${lang_updateupgrade_done}"
+else
+  EchoLog error "${lang_updateupgrade_fail}"
+fi
+
+###############################
+##       P O S T F I X       ##
+###############################
+# Configure Postfix with made mail server settings
+BackupAndRestoreFile backup "/etc/aliases"
+BackupAndRestoreFile backup "/etc/postfix/main.cf"
+BackupAndRestoreFile backup "/etc/postfix/canonical"
+BackupAndRestoreFile backup "/etc/ssl/certs/ca-certificates.crt"
+PostfixConfigured=false
+
+# Change Pistfix configuration to send E-Mails
+if grep "root:" /etc/aliases; then
+  sed -i "s/^root:.*$/root: $MailServerTo/" /etc/aliases
+else
+  echo "root: $MailServerTo" >> /etc/aliases
+fi
+echo "root $MailServerFrom" >> /etc/postfix/canonical
+chmod 600 /etc/postfix/canonical
+echo [$MailServerFQDN]:$MailServerPort "$MailServerUser":"$MailServerPass" >> /etc/postfix/sasl_passwd
+chmod 600 /etc/postfix/sasl_passwd 
+sed -i "/#/!s/\(relayhost[[:space:]]*=[[:space:]]*\)\(.*\)/\1"[$MailServerFQDN]:"$MailServerPort""/"  /etc/postfix/main.cf
+if [ $MailServerTLS ]; then
+  postconf smtp_use_tls=yes
+else
+  postconf smtp_use_tls=no
+fi
+if ! grep "smtp_sasl_password_maps" /etc/postfix/main.cf; then
+  postconf smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd > /dev/null 2>&1
+fi
+if ! grep "smtp_tls_CAfile" /etc/postfix/main.cf; then
+  postconf smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1
+fi
+if ! grep "smtp_sasl_security_options" /etc/postfix/main.cf; then
+  postconf smtp_sasl_security_options=noanonymous > /dev/null 2>&1
+fi
+if ! grep "smtp_sasl_auth_enable" /etc/postfix/main.cf; then
+  postconf smtp_sasl_auth_enable=yes > /dev/null 2>&1
+fi 
+if ! grep "sender_canonical_maps" /etc/postfix/main.cf; then
+  postconf sender_canonical_maps=hash:/etc/postfix/canonical > /dev/null 2>&1
+fi 
+postmap /etc/postfix/sasl_passwd > /dev/null 2>&1
+postmap /etc/postfix/canonical > /dev/null 2>&1
+systemctl restart postfix  &> /dev/null && systemctl enable postfix  &> /dev/null
+rm -rf "/etc/postfix/sasl_passwd"
+
+# Test Postfix settings
+echo -e "${lang_testpostfix_sendmessage}" | mail -a "From: \"${HostName}\" <${MailServerFrom}>" -s "[${lang_testpostfix_subjectarray^^}] ${lang_testpostfix_subjecttext}" "$MailServerTo"
+if ! WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipyesnotext}\n\n${MailServerTo}"; then
+  AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage}"
+  if grep "SMTPUTF8 is required" "/var/log/mail.log"; then
+    if ! grep "smtputf8_enable = no" /etc/postfix/main.cf; then
+      postconf smtputf8_enable=no
+      postfix reload
+    fi
+  fi
+  echo -e "${lang_testpostfix_sendmessage}" | mail -a "From: \"${HostName}\" <${MailServerFrom}>" -s "[${lang_testpostfix_subjectarray^^}] ${lang_testpostfix_subjecttext}" "$MailServerTo"
+  if ! WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipyesnotext}\n\n${MailServerTo}"; then
+    AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage2}"
+    BackupAndRestoreFile restore "/etc/aliases"
+    BackupAndRestoreFile restore "/etc/postfix/canonical"
+    BackupAndRestoreFile restore "/etc/postfix/main.cf"
+    BackupAndRestoreFile restore "/etc/ssl/certs/ca-certificates.crt"
+  fi
+fi
+
+###############################
+##      A P T I C R O N      ##
+###############################
+# Configure Postfix with made mail server settings
 
 ###############################
 ##   S E R V E R   R O L E   ##
 ###############################
+WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
+if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_title}" "${lang_configurationcompleted_messageyesno}"; then ConfigRole=true; fi
+
 # Select Server Role
 if $ConfigRole; then
   ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)

@@ -25,6 +25,7 @@ lang_mailserver_messageboxtext="Um Benachrichtigungen senden zu können, müssen
 lang_mailserver_mailserverfqdntext="Wie lautet die Adresse zu dem genutzten Mailserver?"
 lang_mailserver_mailserverporttext="Wie lautet der SMTP-Port für den genutzten Mailserver?"
 lang_mailserver_mailserverfromtext="Wie lautet die Absende Adresse, von der Benachrichtigungen gesendet werden sollen?"
+lang_mailserver_mailservertotext="Wie lautet die E-Mail-Adresse, an die Benachrichtigungen gesendet werden sollen?"
 lang_mailserver_needloginyesnotext="Wird für den Mailserver ein Login benötigt?"
 lang_mailserver_needloginusertext="Wie lautet der Benutzername, der für den Login benötigt wird?"
 lang_mailserver_needloginpasstext="Wie lautet das Passwort, welches für den Login benötigt wird?"
@@ -40,6 +41,15 @@ lang_softwaredependencies_installfail="konnte nicht installiert werden"
 lang_configurationcompleted_title="Serverkonfiguration"
 lang_configurationcompleted_message="Die Grundkonfiguration des Servers ist beendet. Im nächsten Schritt kann dem Server eine Rolle zugewiesen werden."
 lang_configurationcompleted_messageyesno="Soll ein entsprechender Auswahldialog angezeigt werden?"
+
+# POSTFIX
+lang_testpostfix_sendmessage="Dies ist eine Testnachricht, versendet durch das Konfigurationsskript vom iThieler.\n\nBestätige den erhalt dieser E-Mail im Konfigurationsskript."
+lang_testpostfix_subjectarray="Test"
+lang_testpostfix_subjecttext="Testnachricht"
+lang_testpostfix_whiptitle="Postfix"
+lang_testpostfix_whipyesnotext="Es wurde eine E-Mail an die angegebene Adresse gesendet. Prüfe das Postfach auf erhalt. Wurde die E-Mail erfolgreich zugestellt? (Je nach Anbieter kann dies bis zu 15 Minuten dauern)"
+lang_testpostfix_whipalertmessage="Die Protokolldatei wird auf bekannte Fehler geprüft, es wird versucht, gefundene Fehler automatisch zu beheben.\n\nAnschließend wird erneut eine E-Mail gesendet. Überprüfe auch den Spam-Ordner."
+lang_testpostfix_whipalertmessage2="Leider konnte der Fehler nicht behoben werden. Prüfe das Fehlerprotokoll und konfiguriere Postfix manuell. Alle änderungen werden rückgängig gemacht."
 
 # SERVER ROLE
 lang_selectserverrole_title="Serverrolle"

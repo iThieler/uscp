@@ -25,6 +25,7 @@ lang_mailserver_messageboxtext="To be able to send notifications, you need to sp
 lang_mailserver_mailserverfqdntext="What is the address to the mail server used?"
 lang_mailserver_mailserverporttext="What is the SMTP port for the mail server used?"
 lang_mailserver_mailserverfromtext="What is the sender address from which notifications should be sent?"
+lang_mailserver_mailservertotext="What is the email address to send notifications to?"
 lang_mailserver_needloginyesnotext="Is a login required for the mail server?"
 lang_mailserver_needloginusertext="What is the username required for login?"
 lang_mailserver_needloginpasstext="What is the password required for login?"
@@ -40,6 +41,15 @@ lang_softwaredependencies_installfail="could not install".
 lang_configurationcompleted_title="Server configuration".
 lang_configurationcompleted_message="The basic configuration of the server is completed. In the next step, you can assign a role to the server."
 lang_configurationcompleted_messageyesno="Should a corresponding selection dialog be displayed?"
+
+# POSTFIX
+lang_testpostfix_sendmessage="This is a test message sent by the configuration script from the iThieler.Confirm receipt of this email in the configuration script."
+lang_testpostfix_subjectarray="Test"
+lang_testpostfix_subjecttext="Test message"
+lang_testpostfix_whiptitle="Postfix"
+lang_testpostfix_whipyesnotext="An email was sent to the specified address. Check the mailbox for receipt. Was the e-mail delivered successfully? (Depending on the provider, this can take up to 15 minutes)"
+lang_testpostfix_whipalertmessage="The log file is checked for known errors, an attempt is made to automatically fix any errors found.\n\nAn email is then sent again. Also check the spam folder."
+lang_testpostfix_whipalertmessage2="Unfortunately, the error could not be fixed. Check the error log and configure Postfix manually. All changes will be reverted."
 
 # SERVER ROLE
 lang_selectserverrole_title="Server Role"
