@@ -195,7 +195,6 @@ fi
 # Configure Postfix with made mail server settings
 BackupAndRestoreFile backup "/etc/aliases"
 BackupAndRestoreFile backup "/etc/postfix/main.cf"
-BackupAndRestoreFile backup "/etc/postfix/canonical"
 BackupAndRestoreFile backup "/etc/ssl/certs/ca-certificates.crt"
 PostfixConfigured=false
 
@@ -281,6 +280,7 @@ if $ConfigRole; then
       EchoLog ok "Dieser Server wurde als Docker Host konfiguriert."
     else
       EchoLog error "Fehler bei der Serverkonfiguration"
+    fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
