@@ -276,7 +276,7 @@ if $ConfigRole; then
   ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectserverrole_title^^} " "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)
   if [[ $ServerRole == "dp" ]]; then
     # Config Docker Server with NGINX Proxy Manager
-    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/begin.sh); then
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/dp.sh); then
       EchoLog ok "Dieser Server wurde als Docker Host konfiguriert."
     else
       EchoLog error "Fehler bei der Serverkonfiguration"
@@ -319,6 +319,6 @@ else
   # No Server role desired
   CleanupAll
   EchoLog info "${lang_goodbye}"
-  EchoLog no "${lang_logfilepath} >> $var_logfile"
+  EchoLog no "${lang_logfilepath} >>> $var_logfile"
   exit 0
 fi
