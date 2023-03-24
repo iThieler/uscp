@@ -63,6 +63,12 @@ lang_goodbye="Das war's, bis zum nächsten mal :-)"
 lang_logfilepath="Die LOG-Datei liegt im Root-Verzeichnis"
 
 #######################################
+##        M I S C / D P . S H        ##
+#######################################
+lang_selectproxyinstall_title="Proxy"
+lang_selectproxyinstall_message="Wähle den Proxy, mit dem gearbeitet werden soll, um auf die verschiedenen Docker Container weiterzuleiten."
+
+#######################################
 ## R E Q S / F U N C T I O N S . S H ##
 #######################################
 # HELPER
