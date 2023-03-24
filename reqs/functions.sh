@@ -206,7 +206,6 @@ function WhipMessage() {
   # Call with: WhipMessage "title" "message"
   # ----------
   whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
-  EchoLog b "${2}"
 }
 
 function AlertWhipMessage() {
@@ -216,7 +215,6 @@ function AlertWhipMessage() {
   # ----------
   NEWT_COLORS_FILE=$AlertColorFile \
   whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
-  EchoLog r "${2}"
 }
 
 function WhipYesNo() {
