@@ -159,7 +159,7 @@ debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainNam
 debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
 if apt-get install -y postfix >/dev/null 2>&1; then
   EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
-  if apt-get install mailutils >/dev/null 2>&1; then
+  if apt-get install -y mailutils >/dev/null 2>&1; then
     EchoLog ok "mailutils - ${lang_softwaredependencies_installok}"
   else
     EchoLog error "mailutils - ${lang_softwaredependencies_installfail}"
