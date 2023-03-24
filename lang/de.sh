@@ -56,6 +56,7 @@ lang_selectserverrole_title="Serverrolle"
 lang_selectserverrole_message="Wähle eine Rolle für die der Server konfiguriert werden soll."
 
 lang_goodbye="Das war's, bis zum nächsten mal :-)"
+lang_logfilepath="Die LOG-Datei liegt im Root-Verzeichnis"
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
