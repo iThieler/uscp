@@ -115,7 +115,7 @@ if [ ! -f "$var_answerfile" ]; then
   MailServerTLS=false
   if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginyesnotext}"; then
     MailServerUser=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginusertext}" "${MailServerFrom}")
-    MailServerPass=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginpasstext}" "")
+    MailServerPass=$(WhipInputboxPassword "${lang_mailserver_title}" "${lang_mailserver_needloginpasstext}" "")
     if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginsecuretext}"; then MailServerTLS=true; fi
   fi
 
