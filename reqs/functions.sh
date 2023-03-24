@@ -306,7 +306,7 @@ function WhipInputboxPassword() {
   # ----------
   # Call with: WhipInputboxPassword "title" "message"
   # ----------
-  input=$(whiptail --passwordbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1} " "\n${2}" 0 80 3>&1 1>&2 2>&3)
+  input=$(whiptail --passwordbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "" 3>&1 1>&2 2>&3)
   if [[ "$input" == "" ]]; then
     # If Inputfield is empty
     WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${1}" "${lang_txt_noinput}\n\n${lang_txt_autogeneratepassword}"
