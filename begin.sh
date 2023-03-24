@@ -28,7 +28,8 @@ langlist=(\
 
 # Lists for Serverroles
 rolelist=(\
-  "dc" "      Docker Server with NGINX Proxy Manager" \
+  "dn" "      Docker Server with NGINX Proxy Manager" \
+  "dt" "      Docker Server with traefik" \
   "mc" "      Mailcow Mailserver" \
   "mp" "      MailPiler Mailarchiv" \
   "om" "      TP-Link Omada Software Controller" \
@@ -247,8 +248,13 @@ if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_t
 # Select Server Role
 if $ConfigRole; then
   ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)
-  if [[ $ServerRole == "dc" ]]; then
+  if [[ $ServerRole == "dn" ]]; then
     # Config Docker Server with NGINX Proxy Manager
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
+  elif [[ $ServerRole == "dt" ]]; then
+    # Config Docker Server with traefik
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
