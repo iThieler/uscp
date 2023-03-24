@@ -51,6 +51,10 @@ lang_testpostfix_whipyesnotext="Es wurde eine E-Mail an die angegebene Adresse g
 lang_testpostfix_whipalertmessage="Die Protokolldatei wird auf bekannte Fehler geprüft, es wird versucht, gefundene Fehler automatisch zu beheben.\n\nAnschließend wird erneut eine E-Mail gesendet. Überprüfe auch den Spam-Ordner."
 lang_testpostfix_whipalertmessage2="Leider konnte der Fehler nicht behoben werden. Prüfe das Fehlerprotokoll und konfiguriere Postfix manuell. Alle änderungen werden rückgängig gemacht."
 
+# APTICRON
+lang_confapticron_customsubject="Updates verfügbar"
+lang_confapticron_customnoupdatessubject="keine Update verfügbar"
+
 # SERVER ROLE
 lang_selectserverrole_title="Serverrolle"
 lang_selectserverrole_message="Wähle eine Rolle für die der Server konfiguriert werden soll."

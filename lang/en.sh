@@ -51,6 +51,10 @@ lang_testpostfix_whipyesnotext="An email was sent to the specified address. Chec
 lang_testpostfix_whipalertmessage="The log file is checked for known errors, an attempt is made to automatically fix any errors found.\n\nAn email is then sent again. Also check the spam folder."
 lang_testpostfix_whipalertmessage2="Unfortunately, the error could not be fixed. Check the error log and configure Postfix manually. All changes will be reverted."
 
+# APTICRON
+lang_confapticron_customsubject="Updates available"
+lang_confapticron_customnoupdatessubject="no update available"
+
 # SERVER ROLE
 lang_selectserverrole_title="Server Role"
 lang_selectserverrole_message="Select a role for which the server should be configured."

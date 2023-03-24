@@ -230,6 +230,12 @@ fi
 ##      A P T I C R O N      ##
 ###############################
 # Configure Postfix with made mail server settings
+cp /usr/lib/apticron/apticron.conf /etc/apticron/apticron.conf
+
+sed -i "s/EMAIL=\".*/EMAIL=\"$MailServerTo\"/" /etc/apticron/apticron.conf
+sed -i "s/# CUSTOM_SUBJECT=\".*/CUSTOM_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customsubject}\"/" /etc/apticron/apticron.conf
+sed -i "s/# CUSTOM_NO_UPDATES_SUBJECT=\".*/CUSTOM_NO_UPDATES_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customnoupdatessubject}\"/" /etc/apticron/apticron.conf
+sed -i "s/# CUSTOM_FROM=\".*/CUSTOM_FROM=\"$MailServerFrom\"/" /etc/apticron/apticron.conf
 
 ###############################
 ##   S E R V E R   R O L E   ##
