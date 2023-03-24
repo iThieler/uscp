@@ -4,6 +4,7 @@
 ################################
 # Requierements
 export var_logfile="/root/log_USCP_Script.txt"
+export var_answerfile="/root/answer_uscp_script.sh"
 export var_githubraw="https://raw.githubusercontent.com/iThieler/uscp"
 export var_whipbacktitle="© 2023 - iThieler's Ultimate Server Controllpanel (USCP)"
 
@@ -28,8 +29,7 @@ langlist=(\
 
 # Lists for Serverroles
 rolelist=(\
-  "dn" "      Docker Server with NGINX Proxy Manager" \
-  "dt" "      Docker Server with traefik" \
+  "dp" "      Docker Server with Proxy" \
   "mc" "      Mailcow Mailserver" \
   "mp" "      MailPiler Mailarchiv" \
   "om" "      TP-Link Omada Software Controller" \
@@ -96,26 +96,52 @@ if ! ping -c1 -W5 google.com &> /dev/null; then
   exit 1
 fi
 
-###############################
-## Q U E S T I O N N A I R E ##
-###############################
-# Hostname
-HostName=$(WhipInputbox "${lang_hostname_title}" "${lang_hostname_message}" "${GivenHostName}")
-DomainName=$(WhipInputbox "${lang_domainname_title}" "${lang_domainname_message}" "${GivenDomainName}")
+if [ ! -f "$var_answerfile" ]; then
+  ###############################
+  ## Q U E S T I O N N A I R E ##
+  ###############################
+  # Hostname
+  HostName=$(WhipInputbox "${lang_hostname_title}" "${lang_hostname_message}" "${GivenHostName}")
+  DomainName=$(WhipInputbox "${lang_domainname_title}" "${lang_domainname_message}" "${GivenDomainName}")
 
-# Mailserver for notifications
-WhipMessage "${lang_mailserver_title}" "${lang_mailserver_messageboxtext}"
-MailServerFQDN=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfqdntext}" "mail.${DomainName}")
-MailServerPort=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverporttext}" "587")
-MailServerFrom=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfromtext}" "notify@${DomainName}")
-MailServerTo=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailservertotext}" "monitor@${DomainName}")
-MailServerUser=""
-MailServerPass=""
-MailServerTLS=false
-if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginyesnotext}"; then
-  MailServerUser=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginusertext}" "${MailServerFrom}")
-  MailServerPass=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginpasstext}" "")
-  if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginsecuretext}"; then MailServerTLS=true; fi
+  # Mailserver for notifications
+  WhipMessage "${lang_mailserver_title}" "${lang_mailserver_messageboxtext}"
+  MailServerFQDN=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfqdntext}" "mail.${DomainName}")
+  MailServerPort=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverporttext}" "587")
+  MailServerFrom=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailserverfromtext}" "notify@${DomainName}")
+  MailServerTo=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_mailservertotext}" "monitor@${DomainName}")
+  MailServerUser=""
+  MailServerPass=""
+  MailServerTLS=false
+  if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginyesnotext}"; then
+    MailServerUser=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginusertext}" "${MailServerFrom}")
+    MailServerPass=$(WhipInputbox "${lang_mailserver_title}" "${lang_mailserver_needloginpasstext}" "")
+    if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_mailserver_title}" "${lang_mailserver_needloginsecuretext}"; then MailServerTLS=true; fi
+  fi
+
+  # Answer File
+cat > /root/answer_uscp_script.sh <<EOF
+#!/bin/bash
+########### ANSWERFILE - iThieler' ULTIMATE SERVER CONTROL PANEL SCRIPT ###########
+## In this file, responses are stored in variables that were made when the user  ##
+## executed the script. This makes it easier to re-run the script because the    ##
+## user does not have to answer all the questions over and over again.           ##
+##                                                                               ##
+## Created on $(date)                                                            ##
+###################################################################################
+# Host Variables
+HostName=$
+DomainName=$
+
+# Mailserver Variables
+MailServerFQDN=${MailServerFQDN}
+MailServerPort=${MailServerPort}
+MailServerFrom=${MailServerFrom}
+MailServerTo=${MailServerTo}
+MailServerUser=${MailServerUser}
+MailServerPass=${MailServerPass}
+MailServerTLS=${MailServerTLS}
+EOF
 fi
 
 ###############################
@@ -247,14 +273,10 @@ if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_t
 
 # Select Server Role
 if $ConfigRole; then
-  ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)
-  if [[ $ServerRole == "dn" ]]; then
+  ServerRole=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectserverrole_title^^} " "\n${lang_selectserverrole_message}" 20 80 10 "${rolelist[@]}" 3>&1 1>&2 2>&3)
+  if [[ $ServerRole == "dp" ]]; then
     # Config Docker Server with NGINX Proxy Manager
-    CleanupAll
-    EchoLog info "${lang_goodbye}"
-    exit 0
-  elif [[ $ServerRole == "dt" ]]; then
-    # Config Docker Server with traefik
+    if 
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
