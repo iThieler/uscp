@@ -55,7 +55,7 @@ source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
 # Load functions/updates and strt this script
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
-apt-get update 2>&1 >/dev/null
+apt-get update >/dev/null 2>&1
 HeaderLogo "Ultimate Server Configuration Panel"
 
 ################################
@@ -134,7 +134,7 @@ if CheckPackage "postfix"; then
 else
   debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
   debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-  if apt-get install -y postfix 2>&1 >/dev/null; then
+  if apt-get install -y postfix >/dev/null 2>&1; then
     EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
   else
     EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
@@ -142,11 +142,11 @@ else
 fi
 
 # Install Software dependencies 
-for PACKAGE in fail2ban curl snapd git apticron parted smartmontools mailutils; do
+for PACKAGE in fail2ban curl snapd gnupg git ca-certificates apticron parted smartmontools mailutils; do
   if CheckPackage "${PACKAGE}"; then
     EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
   else
-    if apt-get install -y $PACKAGE 2>&1 >/dev/null; then
+    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
       EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
     else
       EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
