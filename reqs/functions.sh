@@ -19,6 +19,26 @@ function HeaderLogo() {
 "
 }
 
+function DockerLogo() {
+  # This function displays the docker
+  # ----------
+  # Call with: DockerLogo
+  # ----------
+  echo -e "
+                     ##        '
+               ## ## ##       ==
+            ## ## ## ##      ===
+        /''''''''''''''''\___/ ===
+  ~~~  {~~ ~~~~ ~~~ ~~~~ ~~ ~ /  ===_ ~~~
+        \______ o          __/
+          \    \        __/
+           \____\______/
+  "
+  echo "----------" >> "${var_logfile}"
+  echo -e "$(date +'%Y-%m-%d  %T')  [CONFIGURE]   Docker Server" >> "${var_logfile}"
+  echo "----------" >> "${var_logfile}"
+}
+
 function GeneratePassword() {
   # This function generates a random secure password with special characters that also work in Linux
   # ----------
