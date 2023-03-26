@@ -14,7 +14,7 @@ proxylist=(\
 # Load functions/updates and strt this script
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
-apt-get update >/dev/null 2>&1 && echo; echo
+apt-get update >/dev/null 2>&1 && echo; DockerLogo; echo
 if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
 
 # Install Software dependencies 
