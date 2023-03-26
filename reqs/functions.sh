@@ -188,10 +188,10 @@ function CheckPackage() {
   # ----------
   # Call with: CheckPackage "package"
   # ----------
-  if dpkg -l "${1}" &> /dev/null; then
-    return 0
-  else
+  if [[ $(dpkg -l "${1}" | awk '{print $3}' | tail -n 1) == "<none>" ]]; then
     return 1
+  else
+    return 0
   fi
 }
 
