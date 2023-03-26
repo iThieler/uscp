@@ -26,10 +26,10 @@ This multilingual script takes care of the startup tasks after installing a new 
   - smartmontools
   - mailutils
 - Configuration of a server role
-  - Docker Host with NGINX Proxy Manager
-  - E-Mailserver
-  - E-Mailarchive
-  - TP-Link Omada Software Controller
+  - Docker Host with Proxy (NGINX Proxy MAnager and traefik)
+  - E-Mailserver (Mailcow docerized)
+  - E-Mailarchive (Mailpiler)
+  - TP-Link SDN (Omada Software Controller)
   - Web server (NGINX) with certbot for Let's Encrypt
  
 Run the following in the Shell after a fresh setup. ⚠️ **DEBIAN 11 (BULLSEYE) ONLY**
