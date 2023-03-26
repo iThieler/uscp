@@ -61,53 +61,25 @@ done
 ###############################
 InstallProxy=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectproxyinstall_title^^} " "\n${lang_selectserverrole_message}" 20 80 10 "${proxylist[@]}" 3>&1 1>&2 2>&3)
 
+# Load needed Docker files
 if [[ "$InstallProxy" == "npm" ]]; then
-  if [ ! -d "/opt/npm" ]; then mkdir -p /opt/npm/ > /dev/null 2>&1; fi
-cat > /opt/npm/docker-compose.yml <<EOF
-version: '3'
-services:
-  app:
-    image: 'jc21/nginx-proxy-manager:latest'
-    container_name: "NGINX Proxy Manager"
-    restart: always
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./data:/data
-      - ./letsencrypt:/etc/letsencrypt
-EOF
-
-    cd /opt/npm/ && docker compose up -d --quiet-pull > /dev/null 2>&1
+  mkdir -p /opt/npm/ > /dev/null 2>&1
+  wget -qO /opt/npm/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/npm.yml?raw=true
+  cd /opt/npm/
+  ports="80, 81, 443"
 elif [[ "$InstallProxy" == "tra" ]]; then
-  if [ ! -d "/opt/traefik" ]; then mkdir -p /opt/traefik/ > /dev/null 2>&1; fi
-cat > /opt/traefik/docker-compose.yml <<EOF
-version: '3.3'
-services:
-  traefik:
-    image: "traefik:v2.10"
-    container_name: "traefik"
-    restart: always
-    command:
-      #- "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  whoami:
-    image: "traefik/whoami"
-    container_name: "simple-service"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.localhost`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
-EOF
+  mkdir -p /opt/traefik/ > /dev/null 2>&1; fi
+  wget -qO /opt/traefik/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/tra.yml?raw=true
+  cd /opt/traefik/
+  ports="80, 8080"
+fi
 
-    cd /opt/traefik/ && docker compose up -d --quiet-pull > /dev/null 2>&1
+# Start Docker container
+if docker compose up -d --quiet-pull > /dev/null 2>&1; then
+  EchoLog ok "${lang_containerstarted}"
+  EchoLog no "${ports}"
+  exit 0
+else
+  EchoLog ok "${lang_containernotstarted}"
+  exit 1
 fi
