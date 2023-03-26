@@ -67,6 +67,8 @@ lang_logfilepath="Die LOG-Datei liegt im Root-Verzeichnis"
 #######################################
 lang_selectproxyinstall_title="Proxy"
 lang_selectproxyinstall_message="Wähle den Proxy, mit dem gearbeitet werden soll, um auf die verschiedenen Docker Container weiterzuleiten."
+lang_containerstarted="Der ausgewählte Container wurde erfolgreich gestartet. Die folgenden Ports müssen freigegeben werden:"
+lang_containernotstarted="Der ausgewählte Container konnte nicht gestartetwerden."
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
