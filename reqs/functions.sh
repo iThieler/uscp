@@ -205,7 +205,7 @@ function WhipMessage() {
   # ----------
   # Call with: WhipMessage "title" "message"
   # ----------
-  whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
+  whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80
 }
 
 function AlertWhipMessage() {
@@ -214,7 +214,7 @@ function AlertWhipMessage() {
   # Call with: AlertWhipMessage "title" "message"
   # ----------
   NEWT_COLORS_FILE=$AlertColorFile \
-  whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80
+  whiptail --msgbox --ok-button " ${lang_btn_ok^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80
 }
 
 function WhipYesNo() {
@@ -222,7 +222,7 @@ function WhipYesNo() {
   # ----------
   # Call with: WhipYesNo "btn1" "btn2" "title" "message"    >> btn1 = true  btn2 = false
   # ----------
-  whiptail --yesno --yes-button " ${1^^} " --no-button " ${2^^} " --backtitle "${var_whipbacktitle}" --title " ${3^^} " "\n${4}" 0 80
+  whiptail --yesno --yes-button " ${1^^} " --no-button " ${2^^} " --backtitle "${var_whipbacktitle}" --title " ${3^^} " "\n${4}" 8 80
   yesno=$?
   if [ ${yesno} -eq 0 ]; then true; else false; fi
 }
@@ -233,7 +233,7 @@ function AlertWhipYesNo() {
   # Call with: AlertWhipYesNo "btn1" "btn2" "title" "message"    >> btn1 = true  btn2 = false
   # ----------
   NEWT_COLORS_FILE=~/.iThielers_NEWT_COLORS_ALERT \
-  whiptail --yesno --yes-button " ${1^^} " --no-button " ${2^^} " --backtitle "${var_whipbacktitle}" --title " ${3^^} " "${4}" 0 80
+  whiptail --yesno --yes-button " ${1^^} " --no-button " ${2^^} " --backtitle "${var_whipbacktitle}" --title " ${3^^} " "${4}" 8 80
   yesno=$?
   if [ ${yesno} -eq 0 ]; then EchoLog r "${4} ${var_color_blue}${1}${var_color_nc}"; else EchoLog r "${4} ${var_color_blue}${2}${var_color_nc}"; fi
   if [ ${yesno} -eq 0 ]; then true; else false; fi
@@ -244,7 +244,7 @@ function WhipInputbox() {
   # ----------
   # Call with: WhipInputbox "title" "message" "default value"   >> default value is optional
   # ----------
-  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "${3}" 3>&1 1>&2 2>&3)
+  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80 "${3}" 3>&1 1>&2 2>&3)
   if [[ $input == "" ]]; then
     WhipInputbox "$1" "$2\n\n!!! ${lang_txt_noinput} !!!" "${3}"
   else
@@ -258,7 +258,7 @@ function AlertWhipInputbox() {
   # Call with: AlertWhipInputbox "title" "message" "default value"   >> default value is optional
   # ----------
   NEWT_COLORS_FILE=~/.iThielers_NEWT_COLORS_ALERT \
-  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "${3}" 3>&1 1>&2 2>&3)
+  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80 "${3}" 3>&1 1>&2 2>&3)
   if [[ $input == "" ]]; then
     AlertWhipInputbox "$1" "$2\n\n!!! ${lang_txt_noinput} !!!" "${3}"
   else
@@ -271,7 +271,7 @@ function WhipInputboxWithCancel() {
   # ----------
   # Call with: WhipInputboxWithCancel "title" "message" "default value"   >> default value is optional
   # ----------
-  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --cancel-button " ${lang_btn_cancel^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "${3}" 3>&1 1>&2 2>&3)
+  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --cancel-button " ${lang_btn_cancel^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80 "${3}" 3>&1 1>&2 2>&3)
   if [ $? -eq 1 ]; then
     echo cancel
   else
@@ -289,7 +289,7 @@ function AlertWhipInputboxWithCancel() {
   # Call with: AlertWhipInputboxWithCancel "title" "message" "default value"   >> default value is optional
   # ----------
   NEWT_COLORS_FILE=~/.iThielers_NEWT_COLORS_ALERT \
-  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --cancel-button " ${lang_btn_cancel^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "${3}" 3>&1 1>&2 2>&3)
+  input=$(whiptail --inputbox --ok-button " ${lang_btn_ok^^} " --cancel-button " ${lang_btn_cancel^^} " --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80 "${3}" 3>&1 1>&2 2>&3)
   if [ $? -eq 1 ]; then
     echo cancel
   else
@@ -306,7 +306,7 @@ function WhipInputboxPassword() {
   # ----------
   # Call with: WhipInputboxPassword "title" "message"
   # ----------
-  input=$(whiptail --passwordbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 0 80 "" 3>&1 1>&2 2>&3)
+  input=$(whiptail --passwordbox --ok-button " ${lang_btn_ok^^} " --nocancel --backtitle "${var_whipbacktitle}" --title " ${1^^} " "\n${2}" 8 80 "" 3>&1 1>&2 2>&3)
   if [[ "$input" == "" ]]; then
     # If Inputfield is empty
     WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${1}" "${lang_txt_noinput}\n\n${lang_txt_autogeneratepassword}"
