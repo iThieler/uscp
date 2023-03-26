@@ -188,10 +188,10 @@ function CheckPackage() {
   # ----------
   # Call with: CheckPackage "package"
   # ----------
-  if [[ $(dpkg -l "${1}" | awk '{print $3}' | tail -n 1) == "<none>" ]]; then
-    return 1
-  else
+  if [ $(dpkg-query -W -f='${Status}' "${1}" 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
     return 0
+  else
+    return 1
   fi
 }
 
