@@ -96,7 +96,9 @@ if ! ping -c1 -W5 google.com &> /dev/null; then
   exit 1
 fi
 
-if [ ! -f "$var_answerfile" ]; then
+if [ -f "$var_answerfile" ]; then
+  source "$var_answerfile"
+else
   ###############################
   ## Q U E S T I O N N A I R E ##
   ###############################
@@ -120,7 +122,7 @@ if [ ! -f "$var_answerfile" ]; then
   fi
 
   # Answer File
-cat > /root/answer_uscp_script.sh <<EOF
+cat > "$var_answerfile" <<EOF
 #!/bin/bash
 ########### ANSWERFILE - iThieler' ULTIMATE SERVER CONTROL PANEL SCRIPT ###########
 ## In this file, responses are stored in variables that were made when the user  ##
@@ -130,16 +132,17 @@ cat > /root/answer_uscp_script.sh <<EOF
 ## Created on $(date)                                                            ##
 ###################################################################################
 # Host Variables
-HostName=${HostName}
-DomainName=${DomainName}
+HostName="${HostName}"
+DomainName="${DomainName}"
+FullName="${HostName}.${DomainName}"
 
 # Mailserver Variables
-MailServerFQDN=${MailServerFQDN}
+MailServerFQDN="${MailServerFQDN}"
 MailServerPort=${MailServerPort}
-MailServerFrom=${MailServerFrom}
-MailServerTo=${MailServerTo}
-MailServerUser=${MailServerUser}
-MailServerPass=${MailServerPass}
+MailServerFrom="${MailServerFrom}"
+MailServerTo="${MailServerTo}"
+MailServerUser="${MailServerUser}"
+MailServerPass="${MailServerPass}"
 MailServerTLS=${MailServerTLS}
 EOF
 fi
