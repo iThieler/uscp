@@ -39,6 +39,29 @@ function DockerLogo() {
   echo "----------" >> "${var_logfile}"
 }
 
+function MailcowLogo() {
+  echo -e "
+                                          ..
+  .~~:  ^        ^  :~!:                  JBGP?:
+  ?GYB5!BPJYYYY5G&GGB5PP^~~~~~~~~~~~~^~??:B &&B!
+  ^Y::&            &^:Y^             ~7^7~~&!.
+  .~5  &#      #&  P!.           .~7^  !?? 5
+    :&  &P      P#   J~.        :!!:    !BPY^
+    J                Y:?7.    ^?!.      !!
+    5    &&&&&&&&    G~!^!!^~7~~!~.     !!
+    J#P5YJJJJJJJJY5P#P.   .::    ^7!.   !!
+    .7JJ7:?JJJJJ:7JJ7.             :7!. !!
+    :!7!?JJJJY77!:                 :!!?!!
+          ....^7!!?PPPPPJ^~~~~~!!?PPPPP57.
+                ..7     J      ::7     Y
+                  .^~!!^         .^~!!^.
+  "
+  echo "----------" >> "${var_logfile}"
+  echo -e "$(date +'%Y-%m-%d  %T')  [CONFIGURE]   Mailcow Mailserver" >> "${var_logfile}"
+  echo "----------" >> "${var_logfile}"
+
+}
+
 function GeneratePassword() {
   # This function generates a random secure password with special characters that also work in Linux
   # ----------
