@@ -62,6 +62,7 @@ done
 InstallProxy=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectproxyinstall_title^^} " "\n${lang_selectserverrole_message}" 20 80 10 "${proxylist[@]}" 3>&1 1>&2 2>&3)
 
 # Load needed Docker files
+echo ">> $InstallProxy"
 if [[ "$InstallProxy" == "npm" ]]; then
   mkdir -p /opt/npm/ > /dev/null 2>&1
   wget -qO /opt/npm/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/npm.yml?raw=true
@@ -72,6 +73,9 @@ elif [[ "$InstallProxy" == "tra" ]]; then
   wget -qO /opt/traefik/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/tra.yml?raw=true
   cd /opt/traefik/
   ports="80, 8080"
+else
+  EchoLog error ""
+  exit 1
 fi
 
 # Start Docker container
