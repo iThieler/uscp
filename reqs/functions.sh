@@ -65,9 +65,20 @@ function MailcowLogo() {
 function GeneratePassword() {
   # This function generates a random secure password with special characters that also work in Linux
   # ----------
-  # Call with: GeneratePassword 27      !!! Note - 12 is the password length in this example !!!
+  # Call with: GeneratePassword 27      !!! Note - 27 is the password length in this example !!!
   # ----------
   chars=({0..9} {a..z} {A..Z} "_" "%" "+" "-" ".")
+  for i in $(eval echo "{1..$1}"); do
+    echo -n "${chars[$(($RANDOM % ${#chars[@]}))]}"
+  done 
+}
+
+function GenerateUserName() {
+  # This function generates a random Username
+  # ----------
+  # Call with: GenerateUserName 12      !!! Note - 12 is the length of the Username in this example !!!
+  # ----------
+  chars=({0..9} {a..z} {A..Z})
   for i in $(eval echo "{1..$1}"); do
     echo -n "${chars[$(($RANDOM % ${#chars[@]}))]}"
   done 
