@@ -174,14 +174,14 @@ fi
 # Load and start Mailcow Container
 cd "/opt/mailcow-dockerized/"
 EchoLog wait "${lang_mailcow_loadcontainerwait}"
-if docker compose pull --quiet; then
+if docker compose pull; then
   EchoLog ok "${lang_mailcow_loadcontainerok}"
 else
   EchoLog error "${lang_mailcow_loadcontainererror}"
   exit 1
 fi
 
-if docker compose up -d --quiet-pull; then
+if docker compose up -d; then
   EchoLog ok "${lang_mailcow_startcontainerok}"
 else
   EchoLog error "${lang_mailcow_startcontainererror}"
