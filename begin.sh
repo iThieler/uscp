@@ -114,13 +114,13 @@ fi
 ###############################
 # Set TimeZone
 if [[ $(cat /etc/timezone) != "$TimeZone" ]]; then
-  EchoLog info "Ändere Timezone >>> ${TimeZone}"
+  EchoLog info "${lang_change_timezone} >>> ${TimeZone}"
   timedatectl set-timezone "$TimeZone"
 fi
 
 # Set Hostname
 if [[ $(cat /etc/hostname) != "$HostName.$DomainName" ]]; then
-  EchoLog info "Ändere Hostname >>> ${HostName}.${DomainName}"
+  EchoLog info "${lang_change_hostname} >>> ${HostName}.${DomainName}"
   hostnamectl set-hostname "$HostName.$DomainName"
   sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
 fi
@@ -128,6 +128,7 @@ fi
 # Install and configure Postfix as MTA
 if CheckPackage "postfix"; then
   EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
+  if CheckPackage "mailutils"; then EchoLog info "mailutils - ${lang_softwaredependencies_alreadyinstalled}"; fi
 else
   debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
   debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
@@ -236,17 +237,12 @@ fi
 ##      A P T I C R O N      ##
 ###############################
 # Configure Postfix with made mail server settings
-if [ -f "/etc/apticron/apticron.conf" ]; then
-  EchoLog info "apticron - ist schon konfiguriert"
-else
+if [ ! -f "/etc/apticron/apticron.conf" ]; then
   if cp /usr/lib/apticron/apticron.conf /etc/apticron/apticron.conf; then
     sed -i "s/EMAIL=\".*/EMAIL=\"$MailServerTo\"/" /etc/apticron/apticron.conf
     sed -i "s/# CUSTOM_SUBJECT=\".*/CUSTOM_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customsubject}\"/" /etc/apticron/apticron.conf
     sed -i "s/# CUSTOM_NO_UPDATES_SUBJECT=\".*/CUSTOM_NO_UPDATES_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customnoupdatessubject}\"/" /etc/apticron/apticron.conf
     sed -i "s/# CUSTOM_FROM=\".*/CUSTOM_FROM=\"$MailServerFrom\"/" /etc/apticron/apticron.conf
-    EchoLog ok "apticron - wurde konfiguriert"
-  else
-    EchoLog error "apticron - Konfiguration fehlgeschlagen"
   fi
 fi
 
@@ -262,13 +258,13 @@ if $ConfigRole; then
   if [[ $ServerRole == "dp" ]]; then
     # Config Docker Server with NGINX Proxy Manager
     if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/dp.sh); then
-      EchoLog ok "Dieser Server wurde als Docker Host konfiguriert."
+      EchoLog ok "${lang_dockerserver_configok}"
     else
-      EchoLog error "Fehler bei der Serverkonfiguration"
+      EchoLog error "${lang_serverrole_configerror}"
       if rm -rf "/opt/*"; then
-        EchoLog ok "Änderungen durch Serverrollenkonfigurtaion rückgängig gemacht."
+        EchoLog ok "${lang_serverrole_configundo_ok}"
       else
-        EchoLog error "Durch Serverrollenkonfuguration gemachte änderungen konnten nicht rückgängig gemacht werden."
+        EchoLog error "${lang_serverrole_configundo_error}"
       fi
     fi
     CleanupAll
@@ -277,13 +273,13 @@ if $ConfigRole; then
   elif [[ $ServerRole == "mc" ]]; then
     # Mailcow Mailserver
     if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mc.sh); then
-      EchoLog ok "Dieser Server wurde als Mailserver konfiguriert."
+      EchoLog ok "${lang_mailserver_configok}"
     else
-      EchoLog error "Fehler bei der Serverkonfiguration"
+      EchoLog error "${lang_serverrole_configerror}"
       if rm -rf "/opt/*"; then
-        EchoLog ok "Änderungen durch Serverrollenkonfigurtaion rückgängig gemacht."
+        EchoLog ok "${lang_serverrole_configundo_ok}"
       else
-        EchoLog error "Durch Serverrollenkonfuguration gemachte änderungen konnten nicht rückgängig gemacht werden."
+        EchoLog error "${lang_serverrole_configundo_error}"
       fi
     fi
     CleanupAll
@@ -291,16 +287,46 @@ if $ConfigRole; then
     exit 0
   elif [[ $ServerRole == "mp" ]]; then
     # MailPiler Mailarchiv
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mp.sh); then
+      EchoLog ok "${lang_mailarchiv_configok}"
+    else
+      EchoLog error "${lang_serverrole_configerror}"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "${lang_serverrole_configundo_ok}"
+      else
+        EchoLog error "${lang_serverrole_configundo_error}"
+      fi
+    fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
   elif [[ $ServerRole == "om" ]]; then
     # TP-Link Omada Software Controller
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/om.sh); then
+      EchoLog ok "${lang_omadasdn_configok}"
+    else
+      EchoLog error "${lang_serverrole_configerror}"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "${lang_serverrole_configundo_ok}"
+      else
+        EchoLog error "${lang_serverrole_configundo_error}"
+      fi
+    fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
   elif [[ $ServerRole == "ww" ]]; then
     # Webserver based on NGINX with Let's Encrypt
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/ww.sh); then
+      EchoLog ok "${lang_webserver_configok}"
+    else
+      EchoLog error "${lang_serverrole_configerror}"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "${lang_serverrole_configundo_ok}"
+      else
+        EchoLog error "${lang_serverrole_configundo_error}"
+      fi
+    fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
