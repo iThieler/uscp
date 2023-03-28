@@ -36,10 +36,14 @@ done
 ###############################
 # Bind Docker GPG Key
 if [ ! -d "/etc/apt/keyrings" ]; then mkdir -p "/etc/apt/keyrings"; fi
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+if [ ! -f "/etc/apt/keyrings/docker.gpg" ]; then
+  curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+fi
 
 # Bind Docker Repository
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+if [ ! -f "/etc/apt/sources.list.d/docker.list" ]; then
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+fi
 
 # Update Repository
 apt-get update >/dev/null 2>&1
@@ -60,12 +64,25 @@ done
 ###################################
 ## S O F T W A R E   D E L E T E ##
 ###################################
-if service postfix stop; then
-  echo "Postfix gestoppt"
-fi
+# Postfix
 if CheckPackage "postfix"; then
-  apt-get -y autoremove postfix >/dev/null 2>&1
-  apt-get -y purge postfix >/dev/null 2>&1
+  EchoLog wait "${lang_mailcow_postfix_deletewait}"
+  if service postfix stop; then
+    EchoLog ok "${lang_mailcow_postfix_stopok}"
+    BackupAndRestoreFile recover "/etc/aliases"
+    BackupAndRestoreFile recover "/etc/postfix/main.cf"
+    BackupAndRestoreFile recover "/etc/ssl/certs/ca-certificates.crt"
+    if [ -f "/etc/postfix/canonical" ]; then rm -f "/etc/postfix/canonical"; fi
+    if apt-get -y autoremove postfix >/dev/null 2>&1; then
+      EchoLog ok "${lang_mailcow_postfix_deleteok}"
+    else
+      EchoLog error "${lang_mailcow_postfix_deleteerror}"
+      exit 1
+    fi
+  else
+    EchoLog error "${lang_mailcow_postfix_stoperror}"
+    exit 1
+  fi
 fi
 
 ###############################
@@ -154,9 +171,22 @@ else
   exit 1
 fi
 
+# Load and start Mailcow Container
 cd "/opt/mailcow-dockerized/"
-if docker compose pull; then echo OK; fi
-docker compose up -d
+EchoLog wait "${lang_mailcow_loadcontainerwait}"
+if docker compose pull --quiet; then
+  EchoLog ok "${lang_mailcow_loadcontainerok}"
+else
+  EchoLog error "${lang_mailcow_loadcontainererror}"
+  exit 1
+fi
+
+if docker compose up -d --quiet-pull; then
+  EchoLog ok "${lang_mailcow_startcontainerok}"
+else
+  EchoLog error "${lang_mailcow_startcontainererror}"
+fi
+
 cd "/root/"
 
 exit 0
