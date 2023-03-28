@@ -2,14 +2,6 @@
 #######################################
 ## b e g i n . S H ##
 #######################################
-# BASIC SETTINGS
-
-# HOST VARIABLES
-lang_hostname_title="Host Variables"
-lang_hostname_message="What hostname should the server have?"
-lang_domainname_title="Host Variables"
-lang_domainname_message="What is the domain name to be used?"
-
 # CHECKUPS
 lang_proxmox_title="Proxmox"
 lang_proxmox_message="A Proxmox installation has been detected on this system. iThieler's Proxmox Script Collection is opened."
@@ -18,18 +10,9 @@ lang_proxmox_button2="Nah, leave it"
 lang_erroros_title="Operating System"
 lang_erroros_message="The operating system you are using is not supported by this script."
 lang_inetconnection_error="There is a problem with your server's internet connection. However, this is urgently needed by this script."
-
-# QUESTIONNAIRE
-lang_mailserver_title="Mailserver"
-lang_mailserver_messageboxtext="To be able to send notifications, you need to specify the data about a mail server. No matter if self operated or a public one (web.de, gmx.de or gmail.com)."
-lang_mailserver_mailserverfqdntext="What is the address to the mail server used?"
-lang_mailserver_mailserverporttext="What is the SMTP port for the mail server used?"
-lang_mailserver_mailserverfromtext="What is the sender address from which notifications should be sent?"
-lang_mailserver_mailservertotext="What is the email address to send notifications to?"
-lang_mailserver_needloginyesnotext="Is a login required for the mail server?"
-lang_mailserver_needloginusertext="What is the username required for login?"
-lang_mailserver_needloginpasstext="What is the password required for login?"
-lang_mailserver_needloginsecuretext="Does the mail server require encryption (SSL, STARTTLS or similar)?"
+lang_answerfile_found="Answer file found and loaded"
+lang_answerfile_genrate_ok="Answer file successfully created and saved."
+lang_answerfile_generate_error="Answer file could not be created."
 
 # STARTUP
 lang_updateupgrade_startup="Full system update"
@@ -105,6 +88,29 @@ lang_mailcow_mtasts_error="mta-sts could not be enabled."
 ##        M I S C / W W . S H        ##
 #######################################
 
+
+#########################################
+## R E Q S / A N S W E R F I L E . S H ##
+#########################################
+# HOST VARIABLES
+lang_timezone_title="Timezone"
+lang_timezone_message="What is the required timezone?"
+lang_hostname_title="Hostname"
+lang_hostname_message="What hostname should the server have?"
+lang_domainname_title="Host domain name"
+lang_domainname_message="What is the domain name to be used?"
+
+# Mailserver for notifications
+lang_mailserver_title="Mailserver"
+lang_mailserver_messageboxtext="To be able to send notifications, you need to specify the data about a mail server. No matter if self operated or a public one (web.de, gmx.de or gmail.com)."
+lang_mailserver_mailserverfqdntext="What is the address to the mail server used?"
+lang_mailserver_mailserverporttext="What is the SMTP port for the mail server used?"
+lang_mailserver_mailserverfromtext="What is the sender address from which notifications should be sent?"
+lang_mailserver_mailservertotext="What is the email address to send notifications to?"
+lang_mailserver_needloginyesnotext="Is a login required for the mail server?"
+lang_mailserver_needloginusertext="What is the username required for login?"
+lang_mailserver_needloginpasstext="What is the password required for login?"
+lang_mailserver_needloginsecuretext="Does the mail server require encryption (SSL, STARTTLS or similar)?"
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
