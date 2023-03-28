@@ -129,6 +129,7 @@ if wget -qO "$var_mailcow_sogo_logo" https://github.com/iThieler/uscp/blob/main/
 fi
 
 # Add MTA-STS .well-known
+if [ ! -d "/opt/mailcow-dockerized/data/web/.well-known" ]; then mkdir "/opt/mailcow-dockerized/data/web/.well-known"; fi
 cat > "$var_mailcow_mtasts" <<EOF
 version: STSv1
 mode: enforce
