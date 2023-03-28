@@ -72,6 +72,14 @@ lang_containernotstarted="Der ausgewählte Container konnte nicht gestartetwerde
 #######################################
 ##        M I S C / M C . S H        ##
 #######################################
+# Software delete
+lang_mailcow_postfix_deletewait="Entferne Postfix und setze Konfiguration zurück"
+lang_mailcow_postfix_stopok="Postfix service gestoppt"
+lang_mailcow_postfix_stoperror="Postfix service konnte nicht gestoppt werden"
+lang_mailcow_postfix_deleteok="Postfix erfolgreich entfernt"
+lang_mailcow_postfix_deleteerror="Postfix konnte nicht entfernt werden"
+
+# Mailcow
 lang_mailcow_umask_error="Vorraussetzungen für Mailcow nicht erfüllt!"
 lang_mailcow_gitclone_ok="Mailcow Repository erfolgreich geklont"
 lang_mailcow_gitclone_error="Mailcow konnt nicht von github.com bezogen werden."
@@ -84,6 +92,10 @@ lang_mailcow_indexmodifiction_error="index.php konnte nicht für webmail.domain.
 lang_mailcow_sogologo_changed="Logo auf der SOGo Login Seite geändert."
 lang_mailcow_mtasts_ok="mta-sts wurde aktiviert"
 lang_mailcow_mtasts_error="mta-sts konnte nicht aktiviert werden."
+lang_mailcow_loadcontainerok="Mailcow erfolgreich heruntergeladen"
+lang_mailcow_loadcontainererror="Mailcow konnte nicht henruntergeladen werden."
+lang_mailcow_startcontainerok="Mailcow erfolgreich gestartet"
+lang_mailcow_startcontainererror="Mailcow konnte nicht gestartet werden."
 
 #######################################
 ##        M I S C / M P . S H        ##
