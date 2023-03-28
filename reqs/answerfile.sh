@@ -1,4 +1,7 @@
 #!/bin/bash
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
+source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+
 ###############################
 ## Q U E S T I O N N A I R E ##
 ###############################
