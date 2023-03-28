@@ -71,6 +71,42 @@ lang_containerstarted="The selected container was started successfully. The foll
 lang_containernotstarted="The selected container could not be started."
 
 #######################################
+##        M I S C / D T . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / M C . S H        ##
+#######################################
+lang_mailcow_umask_error="Mailcow prerequisites not met!"
+lang_mailcow_gitclone_ok="Mailcow repository cloned successfully"
+lang_mailcow_gitclone_error="Mailcow could not be obtained from github.com"
+lang_mailcow_getconf_ok="Mailcow configuration file loaded."
+lang_mailcow_getconf_error="Mailcow configuration file not loaded."
+lang_mailcow_deactivatetls_ok="TLS1.0 and TLS 1.1 disabled"
+lang_mailcow_deactivatetls_error="Failed to disable TLS 1.0 and TLS1.1"
+lang_mailcow_indexmodifiction_ok="index.php modified for webmail.domain.tld forwarding"
+lang_mailcow_indexmodifiction_error="index.php could not be modified for webmail.domain.tld forwarding"
+lang_mailcow_sogologo_changed="Logo on SOGo login page changed."
+lang_mailcow_mtasts_ok="mta-sts has been enabled."
+lang_mailcow_mtasts_error="mta-sts could not be enabled."
+
+#######################################
+##        M I S C / M P . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / O M . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / W W . S H        ##
+#######################################
+
+
+#######################################
 ## R E Q S / F U N C T I O N S . S H ##
 #######################################
 # HELPER
