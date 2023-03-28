@@ -17,6 +17,7 @@ lang_answerfile_generate_error="Antwortdatei kontte nicht erstellt werden."
 # STARTUP
 lang_change_timezone="Ändere Zeitzone"
 lang_change_hostname="Ändere Hostname"
+lang_wait_installsoftware="Benötigte Software wird installiert"
 lang_updateupgrade_startup="Vollständiges Systemupdate"
 lang_updateupgrade_done="Systemupdate erfolgreich abgeschlossen"
 lang_updateupgrade_fail="Systemupdate nicht erfolgreich. Skript wird beendet."
