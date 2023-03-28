@@ -17,6 +17,7 @@ lang_answerfile_generate_error="Answer file could not be created."
 # STARTUP
 lang_change_timezone="Change timezone"
 lang_change_hostname="Change hostname"
+lang_wait_installsoftware="Required software will be installed"
 lang_updateupgrade_startup="Full system update"
 lang_updateupgrade_done="System update completed successfully"
 lang_updateupgrade_fail="System update not successful. Script terminates."
