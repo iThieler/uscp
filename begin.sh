@@ -283,12 +283,27 @@ if $ConfigRole; then
       EchoLog ok "Dieser Server wurde als Docker Host konfiguriert."
     else
       EchoLog error "Fehler bei der Serverkonfiguration"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "Änderungen durch Serverrollenkonfigurtaion rückgängig gemacht."
+      else
+        EchoLog error "Durch Serverrollenkonfuguration gemachte änderungen konnten nicht rückgängig gemacht werden."
+      fi
     fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
   elif [[ $ServerRole == "mc" ]]; then
     # Mailcow Mailserver
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mc.sh); then
+      EchoLog ok "Dieser Server wurde als Mailserver konfiguriert."
+    else
+      EchoLog error "Fehler bei der Serverkonfiguration"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "Änderungen durch Serverrollenkonfigurtaion rückgängig gemacht."
+      else
+        EchoLog error "Durch Serverrollenkonfuguration gemachte änderungen konnten nicht rückgängig gemacht werden."
+      fi
+    fi
     CleanupAll
     EchoLog info "${lang_goodbye}"
     exit 0
