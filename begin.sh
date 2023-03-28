@@ -100,7 +100,7 @@ if [ -f "$var_answerfile" ]; then
   EchoLog info "${lang_answerfile_found}"
   source "$var_answerfile"
 else
-  if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mc.sh); then
+  if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/reqs/answerfile.sh); then
     EchoLog ok "${lang_answerfile_genrate_ok}"
     source "$var_answerfile"
   else
