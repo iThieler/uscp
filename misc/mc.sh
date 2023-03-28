@@ -80,12 +80,13 @@ if wget -qO $var_mailcow_conf https://github.com/iThieler/uscp/blob/main/conf/mc
   DBUser=$(GenerateUserName 12)
   DBPass=$(GenerateUserName 32)
   DBRoot=$(GenerateUserName 32)
-  sed -i "s/DBNAME=.*/$DBName/" $var_mailcow_conf
-  sed -i "s/DBUSER=.*/$DBUser/" $var_mailcow_conf
-  sed -i "s/DBPASS=.*/$DBPass/" $var_mailcow_conf
-  sed -i "s/DBROOT=.*/$DBRoot/" $var_mailcow_conf
-  sed -i "s/ADDITIONAL_SAN=.*/$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
-  sed -i "s/ADDITIONAL_SERVER_NAMES=.*/$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
+  sed -i "s/MAILCOW_HOSTNAME=.*/MAILCOW_HOSTNAME=$FullName/" $var_mailcow_conf
+  sed -i "s/DBNAME=.*/DBNAME=$DBName/" $var_mailcow_conf
+  sed -i "s/DBUSER=.*/DBUSER=$DBUser/" $var_mailcow_conf
+  sed -i "s/DBPASS=.*/DBPASS=$DBPass/" $var_mailcow_conf
+  sed -i "s/DBROOT=.*/DBROOT=$DBRoot/" $var_mailcow_conf
+  sed -i "s/ADDITIONAL_SAN=.*/ADDITIONAL_SAN=$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
+  sed -i "s/ADDITIONAL_SERVER_NAMES=.*/ADDITIONAL_SERVER_NAMES=$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
 else
   EchoLog error "${lang_mailcow_getconf_error}"
   exit 1
