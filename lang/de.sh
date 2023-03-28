@@ -71,6 +71,42 @@ lang_containerstarted="Der ausgewählte Container wurde erfolgreich gestartet. D
 lang_containernotstarted="Der ausgewählte Container konnte nicht gestartetwerden."
 
 #######################################
+##        M I S C / D T . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / M C . S H        ##
+#######################################
+lang_mailcow_umask_error="Vorraussetzungen für Mailcow nicht erfüllt!"
+lang_mailcow_gitclone_ok="Mailcow Repository erfolgreich geklont"
+lang_mailcow_gitclone_error="Mailcow konnt nicht von github.com bezogen werden."
+lang_mailcow_getconf_ok="Mailcow Konfigurationsdatei geladen."
+lang_mailcow_getconf_error="Mailcow Konfigurationsdatei nicht geladen."
+lang_mailcow_deactivatetls_ok="TLS1.0 und TLS 1.1 deaktiviert"
+lang_mailcow_deactivatetls_error="TLS 1.0 und TLS1.1 konnte nicht deaktiviert werden."
+lang_mailcow_indexmodifiction_ok="index.php für webmail.domain.tld weiterleitung modfiziert"
+lang_mailcow_indexmodifiction_error="index.php konnte nicht für webmail.domain.tld weiterleitung modifiziert werden."
+lang_mailcow_sogologo_changed="Logo auf der SOGo Login Seite geändert."
+lang_mailcow_mtasts_ok="mta-sts wurde aktiviert"
+lang_mailcow_mtasts_error="mta-sts konnte nicht aktiviert werden."
+
+#######################################
+##        M I S C / M P . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / O M . S H        ##
+#######################################
+
+
+#######################################
+##        M I S C / W W . S H        ##
+#######################################
+
+
+#######################################
 ## R E Q S / F U N C T I O N S . S H ##
 #######################################
 # HELPER
