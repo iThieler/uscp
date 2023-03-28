@@ -15,6 +15,8 @@ lang_answerfile_genrate_ok="Answer file successfully created and saved."
 lang_answerfile_generate_error="Answer file could not be created."
 
 # STARTUP
+lang_change_timezone="Change timezone"
+lang_change_hostname="Change hostname"
 lang_updateupgrade_startup="Full system update"
 lang_updateupgrade_done="System update completed successfully"
 lang_updateupgrade_fail="System update not successful. Script terminates."
@@ -41,6 +43,14 @@ lang_confapticron_customnoupdatessubject="no update available"
 # SERVER ROLE
 lang_selectserverrole_title="Server Role"
 lang_selectserverrole_message="Select a role for which the server should be configured."
+lang_serverrole_configerror="Server configuration error"
+lang_serverrole_configundo_ok="Changes made by server role confuguration undone."
+lang_serverrole_configundo_error="Changes made by server role confuguration could not be undone."
+lang_dockerserver_configok="This server has been configured as a Docker host."
+lang_mailserver_configok="This server has been configured as a mail server."
+lang_mailarchive_configok="This server has been configured as a mail archive."
+lang_omadasdn_configok="This server has been configured with the TP-Link Omada software controller."
+lang_webserver_configok="This server has been configured web server."
 
 lang_goodbye="That's it, see you next time :-)"
 lang_logfilepath="The LOG-File is located in the root directory."
