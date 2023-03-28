@@ -64,8 +64,8 @@ if service postfix stop; then
   echo "Postfix gestoppt"
 fi
 if CheckPackage "postfix"; then
-  apt-get -y autoremove postfix
-  apt-get -y purge postfix
+  apt-get -y autoremove postfix >/dev/null 2>&1
+  apt-get -y purge postfix >/dev/null 2>&1
 fi
 
 ###############################
@@ -156,7 +156,7 @@ fi
 
 cd "/opt/mailcow-dockerized/"
 if docker compose pull; then echo OK; fi
-docker comose up -d
+docker compose up -d
 cd "/root/"
 
 exit 0
