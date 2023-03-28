@@ -1,1 +1,144 @@
 #!/bin/bash
+################################
+##      V A R I A B L E S     ##
+################################
+# MAilcow
+var_mailcow_conf="/opt/mailcow-dockerized/mailcow.conf"
+var_mailcow_postfix_extra="/opt/mailcow-dockerized/data/conf/postfix/extra.cf"
+var_mailcow_index_php="/opt/mailcow-dockerized/data/web/index.php"
+var_mailcow_sogo_logo="/opt/mailcow-dockerized/data/conf/sogo/sogo-full.svg"
+var_mailcow_mtasts="/opt/mailcow-dockerized/data/web/.well-known/mta-sts.txt"
+
+################################
+## B A S I C  S E T T I N G S ##
+################################
+# Load functions/updates and strt this script
+source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
+apt-get update >/dev/null 2>&1 && echo; MailcowLogo; echo
+if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
+
+# Install Software dependencies 
+for PACKAGE in lsb-release gnupg; do
+  if CheckPackage "${PACKAGE}"; then
+    EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
+  else
+    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
+      EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
+    else
+      EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
+    fi
+  fi
+done
+
+###############################
+##        D O C K E R        ##
+###############################
+# Bind Docker GPG Key
+if [ ! -d "/etc/apt/keyrings" ]; then mkdir -p "/etc/apt/keyrings"; fi
+curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Bind Docker Repository
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Update Repository
+apt-get update >/dev/null 2>&1
+
+# Install Docker
+for PACKAGE in apparmor docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin; do
+  if CheckPackage "${PACKAGE}"; then
+    EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
+  else
+    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
+      EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
+    else
+      EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
+    fi
+  fi
+done
+
+###############################
+##       M A I L C O W       ##
+###############################
+if [[ ! $(umask) == "0022" ]]; then
+  EchoLog error "${lang_mailcow_umask_error}"
+  exit 1
+fi
+
+cd /opt/
+if git clone https://github.com/mailcow/mailcow-dockerized >/dev/null 2>&1; then
+  EchoLog ok "${lang_mailcow_gitclone_ok}"
+else
+  EchoLog error "${lang_mailcow_gitclone_error}"
+  exit 1
+fi
+
+# Mailcow configuration
+if wget -qO $var_mailcow_conf https://github.com/iThieler/uscp/blob/main/conf/mc/mailcow.conf.txt?raw=true; then
+  EchoLog ok "${lang_mailcow_getconf_ok}"
+  DBName=$(GenerateUserName 12)
+  DBUser=$(GenerateUserName 12)
+  DBPass=$(GenerateUserName 32)
+  DBRoot=$(GenerateUserName 32)
+  sed -i "s/DBNAME=.*/$DBName/" $var_mailcow_conf
+  sed -i "s/DBUSER=.*/$DBUser/" $var_mailcow_conf
+  sed -i "s/DBPASS=.*/$DBPass/" $var_mailcow_conf
+  sed -i "s/DBROOT=.*/$DBRoot/" $var_mailcow_conf
+  sed -i "s/ADDITIONAL_SAN=.*/$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
+  sed -i "s/ADDITIONAL_SERVER_NAMES=.*/$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
+else
+  EchoLog error "${lang_mailcow_getconf_error}"
+  exit 1
+fi
+
+# Deactivate TLS1.0 and TLS1.1 because it's fcking old!
+cat > "$var_mailcow_postfix_extra" <<EOF
+smtp_tls_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+smtpd_tls_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+lmtp_tls_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+lmtp_tls_mandatory_protocols = !SSLv2, !SSLv3,!TLSv1,!TLSv1.1
+# SSL/TLS supported ciphers
+smtp_tls_ciphers = high
+smtp_tls_mandatory_ciphers = high
+smtpd_tls_ciphers = high
+smtpd_tls_mandatory_ciphers = high
+tls_high_cipherlist = tls_high_cipherlist = ECDHE-ECDSA-AES256-GCM-SHA384:TLS_AES_256_GCM_SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:TLS_CHACHA20_POLY1305_SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES256-GCM-SHA384:TLS_AES_256_GCM_SHA384:ECDHE-RSA-CHACHA20-POLY1305:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256
+smtpd_tls_eecdh_grade = ultra
+EOF
+if [ -f "$var_mailcow_postfix_extra" ]; thena
+  EchoLog ok "${lang_mailcow_deactivatetls_ok}"
+else
+  EchoLog error "${lang_mailcow_deactivatetls_error}"
+  exit 1
+fi
+
+# Redirect webmail.domain.tld to SOGo
+rm -f "$var_mailcow_index_php"
+if wget -qO "$var_mailcow_index_php" https://github.com/iThieler/uscp/blob/main/conf/mc/index.php.txt?raw=true; then
+  EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
+else
+  EchoLog error "${lang_mailcow_indexmodifiction_error}"
+fi
+
+# Change Logo on SOGo Login page
+if wget -qO "$var_mailcow_sogo_logo" https://github.com/iThieler/uscp/blob/main/conf/mc/sogo-full.svg.txt?raw=true; then
+  EchoLog ok "${lang_mailcow_sogologo_changed}"
+fi
+
+# Add MTA-STS .well-known
+cat > "$var_mailcow_mtasts" <<EOF
+version: STSv1
+mode: enforce
+max_age: 2419200
+mx: $FullName
+EOF
+if [ -f "$var_mailcow_mtasts" ]; then
+  EchoLog ok "${lang_mailcow_mtasts_ok}"
+else
+  EchoLog error "${lang_mailcow_mtasts_error}"
+  exit 1
+fi
+
+exit 0
