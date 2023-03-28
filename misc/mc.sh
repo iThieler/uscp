@@ -107,7 +107,7 @@ smtpd_tls_mandatory_ciphers = high
 tls_high_cipherlist = tls_high_cipherlist = ECDHE-ECDSA-AES256-GCM-SHA384:TLS_AES_256_GCM_SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:TLS_CHACHA20_POLY1305_SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256:ECDHE-RSA-AES256-GCM-SHA384:TLS_AES_256_GCM_SHA384:ECDHE-RSA-CHACHA20-POLY1305:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:TLS_AES_128_GCM_SHA256
 smtpd_tls_eecdh_grade = ultra
 EOF
-if [ -f "$var_mailcow_postfix_extra" ]; thena
+if [ -f "$var_mailcow_postfix_extra" ]; then
   EchoLog ok "${lang_mailcow_deactivatetls_ok}"
 else
   EchoLog error "${lang_mailcow_deactivatetls_error}"
