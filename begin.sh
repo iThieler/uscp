@@ -125,6 +125,8 @@ if [[ $(cat /etc/hostname) != "$HostName.$DomainName" ]]; then
   sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
 fi
 
+EchoLog wait "${lang_wait_installsoftware}"
+
 # Install and configure Postfix as MTA
 if CheckPackage "postfix"; then
   EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
@@ -249,7 +251,7 @@ fi
 ###############################
 ##   S E R V E R   R O L E   ##
 ###############################
-WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
+#WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
 if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_title}" "${lang_configurationcompleted_messageyesno}"; then ConfigRole=true; fi
 
 # Select Server Role
