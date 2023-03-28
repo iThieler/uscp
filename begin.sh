@@ -16,7 +16,19 @@ export var_color_green='\033[1;32m'
 export var_color_yellow='\033[1;33m'
 
 # Script needed
+ConfigPostfix=false
 ConfigRole=false
+
+# Host
+export OS=$(. /etc/os-release; printf '%s\n' "$ID";)
+export OSVersion=$(. /etc/os-release; printf '%s\n' "$VERSION_ID";)
+export OSCodeName=$(. /etc/os-release; printf '%s\n' "$VERSION_CODENAME";)
+export PrivateIP4=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | grep -E '10.|172.|192.')
+export PublicIP4=$(curl -4 -s icanhazip.com)
+export PublicIP6=$(curl -6 -s icanhazip.com)
+export GivenHostName="$(hostname | cut -d. -f1)"
+export GivenDomainName=""
+if [[ ! "$(hostname | cut -d. -f2-9)" == "${GivenHostName}" ]]; then export GivenDomainName="$(hostname | cut -d. -f2-9)"; fi
 
 ################################
 ##   S C R I P T  L I S T S   ##
@@ -57,19 +69,6 @@ source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 apt-get update >/dev/null 2>&1
 HeaderLogo "Ultimate Server Configuration Panel"
-
-################################
-## H O S T  V A R I A B L E S ##
-################################
-OS=$(. /etc/os-release; printf '%s\n' "$ID";)
-OSVersion=$(. /etc/os-release; printf '%s\n' "$VERSION_ID";)
-OSCodeName=$(. /etc/os-release; printf '%s\n' "$VERSION_CODENAME";)
-PrivateIP4=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | grep -E '10.|172.|192.')
-PublicIP4=$(curl -4 -s icanhazip.com)
-PublicIP6=$(curl -6 -s icanhazip.com)
-GivenHostName="$(hostname | cut -d. -f1)"
-GivenDomainName=""
-if [[ ! "$(hostname | cut -d. -f2-9)" == "${GivenHostName}" ]]; then GivenDomainName="$(hostname | cut -d. -f2-9)"; fi
 
 ################################
 ##       C H E C K U P S      ##
@@ -114,24 +113,35 @@ fi
 ##       S T A R T U P       ##
 ###############################
 # Set TimeZone
-timedatectl set-timezone Europe/Berlin
+if [[ $(cat /etc/timezone) != "$TimeZone" ]]; then
+  EchoLog info "Ändere Timezone >>> ${TimeZone}"
+  timedatectl set-timezone "$TimeZone"
+fi
 
 # Set Hostname
-hostnamectl set-hostname "$HostName.$DomainName"
-sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
+if [[ $(cat /etc/hostname) != "$HostName.$DomainName" ]]; then
+  EchoLog info "Ändere Hostname >>> ${HostName}.${DomainName}"
+  hostnamectl set-hostname "$HostName.$DomainName"
+  sed -i "s/127.0.1.1 .*/127.0.1.1 $HostName $HostName.$DomainName/" /etc/hosts
+fi
 
 # Install and configure Postfix as MTA
-debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
-debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-if apt-get install -y postfix >/dev/null 2>&1; then
-  EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
-  if apt-get install -y mailutils >/dev/null 2>&1; then
-    EchoLog ok "mailutils - ${lang_softwaredependencies_installok}"
-  else
-    EchoLog error "mailutils - ${lang_softwaredependencies_installfail}"
-  fi
+if CheckPackage "postfix"; then
+  EchoLog info "postfix - ${lang_softwaredependencies_alreadyinstalled}"
 else
-  EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
+  debconf-set-selections <<< "postfix postfix/mailname string $HostName.$DomainName"
+  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+  if apt-get install -y postfix >/dev/null 2>&1; then
+    EchoLog ok "postfix - ${lang_softwaredependencies_installok}"
+    if apt-get install -y mailutils >/dev/null 2>&1; then
+      EchoLog ok "mailutils - ${lang_softwaredependencies_installok}"
+      ConfigPostfix=true
+    else
+      EchoLog error "mailutils - ${lang_softwaredependencies_installfail}"
+    fi
+  else
+    EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
+  fi
 fi
 
 # Install Software dependencies 
@@ -158,65 +168,67 @@ fi
 ###############################
 ##       P O S T F I X       ##
 ###############################
-# Configure Postfix with made mail server settings
-BackupAndRestoreFile backup "/etc/aliases"
-BackupAndRestoreFile backup "/etc/postfix/main.cf"
-BackupAndRestoreFile backup "/etc/ssl/certs/ca-certificates.crt"
-PostfixConfigured=false
+if $ConfigPostfix; then
+  # Configure Postfix with made mail server settings
+  BackupAndRestoreFile backup "/etc/aliases"
+  BackupAndRestoreFile backup "/etc/postfix/main.cf"
+  BackupAndRestoreFile backup "/etc/ssl/certs/ca-certificates.crt"
+  PostfixConfigured=false
 
-# Change Pistfix configuration to send E-Mails
-if grep "root:" /etc/aliases; then
-  sed -i "s/^root:.*$/root: $MailServerTo/" /etc/aliases
-else
-  echo "root: $MailServerTo" >> /etc/aliases
-fi
-echo "root $MailServerFrom" >> /etc/postfix/canonical
-chmod 600 /etc/postfix/canonical
-echo [$MailServerFQDN]:$MailServerPort "$MailServerUser":"$MailServerPass" >> /etc/postfix/sasl_passwd
-chmod 600 /etc/postfix/sasl_passwd
-sed -i "/#/!s/\(relayhost[[:space:]]*=[[:space:]]*\)\(.*\)/\1"[$MailServerFQDN]:"$MailServerPort""/"  /etc/postfix/main.cf
-if [ $MailServerTLS ]; then
-  postconf smtp_use_tls=yes
-else
-  postconf smtp_use_tls=no
-fi
-if ! grep "smtp_sasl_password_maps" /etc/postfix/main.cf; then
-  postconf smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd > /dev/null 2>&1
-fi
-if ! grep "smtp_tls_CAfile" /etc/postfix/main.cf; then
-  postconf smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1
-fi
-if ! grep "smtp_sasl_security_options" /etc/postfix/main.cf; then
-  postconf smtp_sasl_security_options=noanonymous > /dev/null 2>&1
-fi
-if ! grep "smtp_sasl_auth_enable" /etc/postfix/main.cf; then
-  postconf smtp_sasl_auth_enable=yes > /dev/null 2>&1
-fi 
-if ! grep "sender_canonical_maps" /etc/postfix/main.cf; then
-  postconf sender_canonical_maps=hash:/etc/postfix/canonical > /dev/null 2>&1
-fi 
-postmap /etc/postfix/sasl_passwd > /dev/null 2>&1
-postmap /etc/postfix/canonical > /dev/null 2>&1
-systemctl restart postfix  &> /dev/null && systemctl enable postfix  &> /dev/null
-rm -rf "/etc/postfix/sasl_passwd"
-
-# Test Postfix settings
-echo -e "${lang_testpostfix_sendmessage}" | mail -a "From: \"${HostName}\" <${MailServerFrom}>" -s "[${lang_testpostfix_subjectarray^^}] ${lang_testpostfix_subjecttext}" "$MailServerTo"
-if ! WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipyesnotext}\n\n${MailServerTo}"; then
-  AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage}"
-  if grep "SMTPUTF8 is required" "/var/log/mail.log"; then
-    if ! grep "smtputf8_enable = no" /etc/postfix/main.cf; then
-      postconf smtputf8_enable=no
-      postfix reload
-    fi
+  # Change Pistfix configuration to send E-Mails
+  if grep "root:" /etc/aliases; then
+    sed -i "s/^root:.*$/root: $MailServerTo/" /etc/aliases
+  else
+    echo "root: $MailServerTo" >> /etc/aliases
   fi
+  echo "root $MailServerFrom" >> /etc/postfix/canonical
+  chmod 600 /etc/postfix/canonical
+  echo [$MailServerFQDN]:$MailServerPort "$MailServerUser":"$MailServerPass" >> /etc/postfix/sasl_passwd
+  chmod 600 /etc/postfix/sasl_passwd
+  sed -i "/#/!s/\(relayhost[[:space:]]*=[[:space:]]*\)\(.*\)/\1"[$MailServerFQDN]:"$MailServerPort""/"  /etc/postfix/main.cf
+  if [ $MailServerTLS ]; then
+    postconf smtp_use_tls=yes
+  else
+    postconf smtp_use_tls=no
+  fi
+  if ! grep "smtp_sasl_password_maps" /etc/postfix/main.cf; then
+    postconf smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd > /dev/null 2>&1
+  fi
+  if ! grep "smtp_tls_CAfile" /etc/postfix/main.cf; then
+    postconf smtp_tls_CAfile=/etc/ssl/certs/ca-certificates.crt > /dev/null 2>&1
+  fi
+  if ! grep "smtp_sasl_security_options" /etc/postfix/main.cf; then
+    postconf smtp_sasl_security_options=noanonymous > /dev/null 2>&1
+  fi
+  if ! grep "smtp_sasl_auth_enable" /etc/postfix/main.cf; then
+    postconf smtp_sasl_auth_enable=yes > /dev/null 2>&1
+  fi 
+  if ! grep "sender_canonical_maps" /etc/postfix/main.cf; then
+    postconf sender_canonical_maps=hash:/etc/postfix/canonical > /dev/null 2>&1
+  fi 
+  postmap /etc/postfix/sasl_passwd > /dev/null 2>&1
+  postmap /etc/postfix/canonical > /dev/null 2>&1
+  systemctl restart postfix  &> /dev/null && systemctl enable postfix  &> /dev/null
+  rm -rf "/etc/postfix/sasl_passwd"
+
+  # Test Postfix settings
   echo -e "${lang_testpostfix_sendmessage}" | mail -a "From: \"${HostName}\" <${MailServerFrom}>" -s "[${lang_testpostfix_subjectarray^^}] ${lang_testpostfix_subjecttext}" "$MailServerTo"
   if ! WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipyesnotext}\n\n${MailServerTo}"; then
-    AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage2}"
-    BackupAndRestoreFile restore "/etc/aliases"
-    BackupAndRestoreFile restore "/etc/postfix/canonical"
-    BackupAndRestoreFile restore "/etc/postfix/main.cf"
-    BackupAndRestoreFile restore "/etc/ssl/certs/ca-certificates.crt"
+    AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage}"
+    if grep "SMTPUTF8 is required" "/var/log/mail.log"; then
+      if ! grep "smtputf8_enable = no" /etc/postfix/main.cf; then
+        postconf smtputf8_enable=no
+        postfix reload
+      fi
+    fi
+    echo -e "${lang_testpostfix_sendmessage}" | mail -a "From: \"${HostName}\" <${MailServerFrom}>" -s "[${lang_testpostfix_subjectarray^^}] ${lang_testpostfix_subjecttext}" "$MailServerTo"
+    if ! WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipyesnotext}\n\n${MailServerTo}"; then
+      AlertWhipMessage "${lang_testpostfix_whiptitle}" "${lang_testpostfix_whipalertmessage2}"
+      BackupAndRestoreFile restore "/etc/aliases"
+      BackupAndRestoreFile restore "/etc/postfix/canonical"
+      BackupAndRestoreFile restore "/etc/postfix/main.cf"
+      BackupAndRestoreFile restore "/etc/ssl/certs/ca-certificates.crt"
+    fi
   fi
 fi
 
@@ -224,12 +236,19 @@ fi
 ##      A P T I C R O N      ##
 ###############################
 # Configure Postfix with made mail server settings
-cp /usr/lib/apticron/apticron.conf /etc/apticron/apticron.conf
-
-sed -i "s/EMAIL=\".*/EMAIL=\"$MailServerTo\"/" /etc/apticron/apticron.conf
-sed -i "s/# CUSTOM_SUBJECT=\".*/CUSTOM_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customsubject}\"/" /etc/apticron/apticron.conf
-sed -i "s/# CUSTOM_NO_UPDATES_SUBJECT=\".*/CUSTOM_NO_UPDATES_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customnoupdatessubject}\"/" /etc/apticron/apticron.conf
-sed -i "s/# CUSTOM_FROM=\".*/CUSTOM_FROM=\"$MailServerFrom\"/" /etc/apticron/apticron.conf
+if [ -f "/etc/apticron/apticron.conf" ]; then
+  EchoLog info "apticron - ist schon konfiguriert"
+else
+  if cp /usr/lib/apticron/apticron.conf /etc/apticron/apticron.conf; then
+    sed -i "s/EMAIL=\".*/EMAIL=\"$MailServerTo\"/" /etc/apticron/apticron.conf
+    sed -i "s/# CUSTOM_SUBJECT=\".*/CUSTOM_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customsubject}\"/" /etc/apticron/apticron.conf
+    sed -i "s/# CUSTOM_NO_UPDATES_SUBJECT=\".*/CUSTOM_NO_UPDATES_SUBJECT=\"[${HostName^^}] ${lang_confapticron_customnoupdatessubject}\"/" /etc/apticron/apticron.conf
+    sed -i "s/# CUSTOM_FROM=\".*/CUSTOM_FROM=\"$MailServerFrom\"/" /etc/apticron/apticron.conf
+    EchoLog ok "apticron - wurde konfiguriert"
+  else
+    EchoLog error "apticron - Konfiguration fehlgeschlagen"
+  fi
+fi
 
 ###############################
 ##   S E R V E R   R O L E   ##
