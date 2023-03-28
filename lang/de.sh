@@ -15,6 +15,8 @@ lang_answerfile_genrate_ok="Antwortdatei erfolgreich erstellt und gespeichert."
 lang_answerfile_generate_error="Antwortdatei kontte nicht erstellt werden."
 
 # STARTUP
+lang_change_timezone="Ändere Zeitzone"
+lang_change_hostname="Ändere Hostname"
 lang_updateupgrade_startup="Vollständiges Systemupdate"
 lang_updateupgrade_done="Systemupdate erfolgreich abgeschlossen"
 lang_updateupgrade_fail="Systemupdate nicht erfolgreich. Skript wird beendet."
@@ -41,6 +43,14 @@ lang_confapticron_customnoupdatessubject="keine Update verfügbar"
 # SERVER ROLE
 lang_selectserverrole_title="Serverrolle"
 lang_selectserverrole_message="Wähle eine Rolle für die der Server konfiguriert werden soll."
+lang_serverrole_configerror="Fehler bei der Serverkonfiguration"
+lang_serverrole_configundo_ok="Änderungen durch Serverrollenkonfigurtaion rückgängig gemacht."
+lang_serverrole_configundo_error="Durch Serverrollenkonfuguration gemachte änderungen konnten nicht rückgängig gemacht werden."
+lang_dockerserver_configok="Dieser Server wurde als Docker Host konfiguriert."
+lang_mailserver_configok="Dieser Server wurde als Mailserver konfiguriert."
+lang_mailarchiv_configok="Dieser Server wurde als Mailarchiv konfiguriert."
+lang_omadasdn_configok="Dieser Server wurde mit dem TP-Link Omada Software Controller konfiguriert."
+lang_webserver_configok="Dieser Server wurde Webserver konfiguriert."
 
 lang_goodbye="Das war's, bis zum nächsten mal :-)"
 lang_logfilepath="Die LOG-Datei liegt im Root-Verzeichnis"
