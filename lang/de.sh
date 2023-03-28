@@ -2,14 +2,6 @@
 #######################################
 ##          b e g i n . S H          ##
 #######################################
-# BASIC SETTINGS
-
-# HOST VARIABLES
-lang_hostname_title="Host Variables"
-lang_hostname_message="Welchen Hostnamen soll der Server haben?"
-lang_domainname_title="Host Variables"
-lang_domainname_message="Wie lautet der Domainname, der genutzt werden soll?"
-
 # CHECKUPS
 lang_proxmox_title="Proxmox"
 lang_proxmox_message="Auf diesem System wurde eine Proxmox Installation erkannt. iThieler's Proxmox Script Collection wird geöffnet."
@@ -18,18 +10,9 @@ lang_proxmox_button2="Ne, lass mal"
 lang_erroros_title="Betriebssystem"
 lang_erroros_message="Das genutzte Betriebssystem wird von diesem Skript nicht unterstützt."
 lang_inetconnection_error="Es besteht ein Problem mit der Internetverbindung deines Servers. Diese wird von diesem Skript jedoch dringend benötigt."
-
-# QUESTIONNAIRE
-lang_mailserver_title="Mailserver"
-lang_mailserver_messageboxtext="Um Benachrichtigungen senden zu können, müssen die Daten zu einem Mailserver angegeben werden. Egal ob selbst betrieben oder ein öffentlicher (web.de, gmx.de oder gmail.com)."
-lang_mailserver_mailserverfqdntext="Wie lautet die Adresse zu dem genutzten Mailserver?"
-lang_mailserver_mailserverporttext="Wie lautet der SMTP-Port für den genutzten Mailserver?"
-lang_mailserver_mailserverfromtext="Wie lautet die Absende Adresse, von der Benachrichtigungen gesendet werden sollen?"
-lang_mailserver_mailservertotext="Wie lautet die E-Mail-Adresse, an die Benachrichtigungen gesendet werden sollen?"
-lang_mailserver_needloginyesnotext="Wird für den Mailserver ein Login benötigt?"
-lang_mailserver_needloginusertext="Wie lautet der Benutzername, der für den Login benötigt wird?"
-lang_mailserver_needloginpasstext="Wie lautet das Passwort, welches für den Login benötigt wird?"
-lang_mailserver_needloginsecuretext="Benötigt der Mailserver eine Verschlüsselung (SSL, STARTTLS o.Ä.)?"
+lang_answerfile_found="Antwortdatei gefunden und geladen"
+lang_answerfile_genrate_ok="Antwortdatei erfolgreich erstellt und gespeichert."
+lang_answerfile_generate_error="Antwortdatei kontte nicht erstellt werden."
 
 # STARTUP
 lang_updateupgrade_startup="Vollständiges Systemupdate"
@@ -105,6 +88,29 @@ lang_mailcow_mtasts_error="mta-sts konnte nicht aktiviert werden."
 ##        M I S C / W W . S H        ##
 #######################################
 
+
+#########################################
+## R E Q S / A N S W E R F I L E . S H ##
+#########################################
+# HOST VARIABLES
+lang_timezone_title="Timezone"
+lang_timezone_message="Wie lautet die benötigte Timezone?"
+lang_hostname_title="Hostname"
+lang_hostname_message="Welchen Hostnamen soll der Server haben?"
+lang_domainname_title="Host Domainname"
+lang_domainname_message="Wie lautet der Domainname, der genutzt werden soll?"
+
+# Mailserver for notifications
+lang_mailserver_title="Mailserver"
+lang_mailserver_messageboxtext="Um Benachrichtigungen senden zu können, müssen die Daten zu einem Mailserver angegeben werden. Egal ob selbst betrieben oder ein öffentlicher (web.de, gmx.de oder gmail.com)."
+lang_mailserver_mailserverfqdntext="Wie lautet die Adresse zu dem genutzten Mailserver?"
+lang_mailserver_mailserverporttext="Wie lautet der SMTP-Port für den genutzten Mailserver?"
+lang_mailserver_mailserverfromtext="Wie lautet die Absende Adresse, von der Benachrichtigungen gesendet werden sollen?"
+lang_mailserver_mailservertotext="Wie lautet die E-Mail-Adresse, an die Benachrichtigungen gesendet werden sollen?"
+lang_mailserver_needloginyesnotext="Wird für den Mailserver ein Login benötigt?"
+lang_mailserver_needloginusertext="Wie lautet der Benutzername, der für den Login benötigt wird?"
+lang_mailserver_needloginpasstext="Wie lautet das Passwort, welches für den Login benötigt wird?"
+lang_mailserver_needloginsecuretext="Benötigt der Mailserver eine Verschlüsselung (SSL, STARTTLS o.Ä.)?"
 
 #######################################
 ## R E Q S / F U N C T I O N S . S H ##
