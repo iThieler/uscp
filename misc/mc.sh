@@ -2,7 +2,7 @@
 ################################
 ##      V A R I A B L E S     ##
 ################################
-# MAilcow
+# Mailcow
 var_mailcow_conf="/opt/mailcow-dockerized/mailcow.conf"
 var_mailcow_postfix_extra="/opt/mailcow-dockerized/data/conf/postfix/extra.cf"
 var_mailcow_index_php="/opt/mailcow-dockerized/data/web/index.php"
@@ -56,6 +56,17 @@ for PACKAGE in apparmor docker-ce docker-ce-cli containerd.io docker-buildx-plug
     fi
   fi
 done
+
+###################################
+## S O F T W A R E   D E L E T E ##
+###################################
+if service postfix stop; then
+  echo "Postfix gestoppt"
+fi
+if CheckPackage "postfix"; then
+  apt-get -y autoremove postfix
+  apt-get -y purge postfix
+fi
 
 ###############################
 ##       M A I L C O W       ##
@@ -142,5 +153,10 @@ else
   EchoLog error "${lang_mailcow_mtasts_error}"
   exit 1
 fi
+
+cd "/opt/mailcow-dockerized/"
+if docker compose pull; then echo OK; fi
+docker comose up -d
+cd "/root/"
 
 exit 0
