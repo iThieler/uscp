@@ -1,4 +1,10 @@
 #!/bin/bash
+# Load functions/updates and strt this script
+source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
+apt-get update >/dev/null 2>&1 && echo; OmadaLogo; echo
+if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
+
 ################################
 ##      V A R I A B L E S     ##
 ################################
@@ -35,12 +41,6 @@ fi
 if [ ! -f "/etc/apt/sources.list.d/mongodb.list" ]; then
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/mongodb.gpg] http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb.list > /dev/null
 fi
-
-# Load functions/updates and strt this script
-source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
-source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
-apt-get update >/dev/null 2>&1 && echo; OmadaLogo; echo
-if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
 
 # Install Software dependencies
 for PACKAGE in jsvc curl certbot openjdk-11-jre-headless mongodb-org; do
