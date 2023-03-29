@@ -59,7 +59,24 @@ function MailcowLogo() {
   echo "----------" >> "${var_logfile}"
   echo -e "$(date +'%Y-%m-%d  %T')  [CONFIGURE]   Mailcow Mailserver" >> "${var_logfile}"
   echo "----------" >> "${var_logfile}"
+}
 
+function OmadaLogo() {
+  echo -e "
+                           .^!?JYYJ7~:                       
+                        .7P##BP5Y5PG#&BJ^                    
+                       :B@P!         ^J#@7                   
+                           ~5B##B###P7         ::            
+                         .JG7:      ~PG^       #B            
+   :?555Y7.  .75PP5!7PPP5~   :?5PP5?.   :?5PP5J&B  :?5PP5J:  
+  7&Y~::~P#^ B&7:^Y@&7:^Y@J ?@P~:^!G&! 7&P!:^!P@B 7&P!^^!P&7 
+  B#     :@Y.@P   .@G   :@G #@.    :@G B@:    :@B B@:    .@B 
+  ~BP7~~?GG::@G   :@G   :@G ~#B?!!JB@B ~BBJ!!JB@B ~BBJ!!JB@B 
+   .!JYYJ~  .7!   .7!   .7!  .!J5YJ!7!   !J55J!7!   ~J55J!7! 
+  "
+  echo "----------" >> "${var_logfile}"
+  echo -e "$(date +'%Y-%m-%d  %T')  [CONFIGURE]   TP-Link Omada Software Controller Server" >> "${var_logfile}"
+  echo "----------" >> "${var_logfile}"
 }
 
 function GeneratePassword() {
