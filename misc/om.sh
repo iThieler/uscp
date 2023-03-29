@@ -67,7 +67,7 @@ fi
 apt-get update >/dev/null 2>&1
 
 # Install MongoDB
-for PACKAGE in openjdk-11-jre-headless mongodb-org jsvc curl; do
+for PACKAGE in openjdk-11-jre-headless mongodb-org jsvc curl certbot; do
   if CheckPackage "${PACKAGE}"; then
     EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
   else
@@ -121,21 +121,21 @@ fi
 ##       C E R T B O T       ##
 ###############################
 # Install certbot via snap
-if snap install core 2>&1 >/dev/null; then
-  snap refresh core &> /dev/null
-  EchoLog ok "install SNAP Core"
-else
-  EchoLog error "install SNAP Core"
-  exit 1
-fi
+#if snap install core 2>&1 >/dev/null; then
+#  snap refresh core &> /dev/null
+#  EchoLog ok "install SNAP Core"
+#else
+#  EchoLog error "install SNAP Core"
+#  exit 1
+#fi
 
-if snap install certbot --classic 2>&1 >/dev/null; then
-  ln -s /snap/bin/certbot /usr/bin/certbot
-  EchoLog ok "install Certbot"
-else
-  EchoLog error "install Certbot"
-  exit 1
-fi
+#if snap install certbot --classic 2>&1 >/dev/null; then
+#  ln -s /snap/bin/certbot /usr/bin/certbot
+#  EchoLog ok "install Certbot"
+#else
+#  EchoLog error "install Certbot"
+#  exit 1
+#fi
 
 if certbot certonly --standalone --agree-tos -d ${FullName} -m ${MailServerTo} -n &> /dev/null; then
   EchoLog ok "create Let's Encrypt certificate"
