@@ -35,7 +35,7 @@ cat > "$var_answerfile" <<EOF
 ## executed the script. This makes it easier to re-run the script because the    ##
 ## user does not have to answer all the questions over and over again.           ##
 ##                                                                               ##
-## Created on $(date)                                                            ##
+## Created on $(date)                                    ##
 ###################################################################################
 # Host Variables
 TimeZone="${TimeZone}"
