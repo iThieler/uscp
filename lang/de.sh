@@ -106,7 +106,28 @@ lang_mailcow_startcontainererror="Mailcow konnte nicht gestartet werden."
 #######################################
 ##        M I S C / O M . S H        ##
 #######################################
+# Checkups
+lang_omada_checkdnserror="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record"
+lang_omada_checkdnspublicerror="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record für öffentliche IPs"
 
+# Certbot
+lang_omada_gencertok="Let's Encrypt-Zertifikat wurde erstellt"
+lang_omada_gencerterror="Let's Encrypt-Zertifikat wurde erstellt"
+lang_omada_croncertok="CronJob-Datei zur Zertifikatserneurung erstellt"
+lang_omada_croncerterror="CronJob-Datei zur Zertifikatserneurung konnte nicht erstellt werden"
+
+# Omada SDN
+lang_omada_selectversion_title="Omada Version"
+lang_omada_selectversion_message="Welche Version des Omada Software Controller soll installiert werden?"
+lang_omada_downloadok="Installationspaket erfolgreich heruntergeladen"
+lang_omada_downloaderror="Installationspaket konnte nicht geladen werden"
+lang_omada_instalok="TP-Link Omada Software Controller erfolgreich installiert"
+lang_omada_instalerror="Fehler bei der Installation des Omada Software Controller"
+lang_omada_testrenewcertok="Das SSL-Zertifikat von Let's Encrypt wurde erfolgreich erneuert"
+lang_omada_testrenewcerterror="Das SSL-Zertifikat konnte nicht erneuert werden"
+lang_omada_sdnstartok="Der Omada Software Controller wurde erfolgreich gestartet. Die folgenden Ports müssen freigegeben werden"
+lang_omada_sdnstarterror="Der Omada Software Controlle konnte nicht gestartet werden."
+lang_omada_webadress="Adresse der Weboberfläche"
 
 #######################################
 ##        M I S C / W W . S H        ##
