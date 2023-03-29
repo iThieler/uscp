@@ -65,7 +65,7 @@ if [ -f "${var_logfile}" ]; then firstrun=false; fi
 export language=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\nSelect your Language" 20 80 10 "${langlist[@]}" 3>&1 1>&2 2>&3)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
-# Load functions/updates and strt this script
+# Load functions/updates and start this script
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 apt-get update >/dev/null 2>&1
 HeaderLogo "Ultimate Server Configuration Panel"
