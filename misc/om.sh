@@ -30,22 +30,22 @@ versionlist=(\
 ##       C H E C K U P S      ##
 ################################
 # Check DNS-A and DNS-AAAA Record
-if [ -z "$DNS_A" ] && [ -z "$DNS_AAAA" ]; then echoLOG r "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record!" && exit 1; fi
+if [ -z "$DNS_A" ] && [ -z "$DNS_AAAA" ]; then EchoLog error "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record!" && exit 1; fi
 
 # Check DNS-A for privat Network IP
 DNS_A_First=`echo $DNS_A | cut -d. -f1`
 DNS_A_Second=`echo $DNS_A | cut -d. -f2`
 if [ $DNS_A_First -eq 10 ] || [ $DNS_A_First -eq 127 ]; then
-  echoLOG r "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
+  EchoLog error "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
   exit 1
 elif [ $DNS_A_First -eq 192 ] && [ $DNS_A_Second -eq 168 ]; then
-  echoLOG r "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
+  EchoLog error "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
   exit 1
 elif [ $DNS_A_First -eq 169 ] && [ $DNS_A_Second -eq 254 ]; then
-  echoLOG r "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
+  EchoLog error "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
   exit 1
 elif [ $DNS_A_First -eq 172 ] && [ $DNS_A_Second -ge 16 ] && [ $DNS_A_Second -le 31 ]; then
-  echoLOG r "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
+  EchoLog error "Script only supports Domainnames (FQDN) with valid DNS-A and/or DNS-AAAA Record for public IPs!"
   exit 1
 fi
 
@@ -123,24 +123,24 @@ fi
 # Install certbot via snap
 if snap install core 2>&1 >/dev/null; then
   snap refresh core &> /dev/null
-  echoLOG g "install SNAP Core"
+  EchoLog ok "install SNAP Core"
 else
-  echoLOG r "install SNAP Core"
+  EchoLog error "install SNAP Core"
   exit 1
 fi
 
 if snap install certbot --classic 2>&1 >/dev/null; then
   ln -s /snap/bin/certbot /usr/bin/certbot
-  echoLOG g "install Certbot"
+  EchoLog ok "install Certbot"
 else
-  echoLOG r "install Certbot"
+  EchoLog error "install Certbot"
   exit 1
 fi
 
 if certbot certonly --standalone --agree-tos -d ${FullName} -m ${MailServerTo} -n &> /dev/null; then
-  echoLOG g "create Let's Encrypt certificate"
+  EchoLog ok "create Let's Encrypt certificate"
 else
-  echoLOG r "create Let's Encrypt certificate"
+  EchoLog error "create Let's Encrypt certificate"
   exit 1
 fi
 
@@ -167,31 +167,31 @@ FILE="/root/$(basename "$URL")"
 if [ -f "$FILE" ]; then rm -f "$FILE"; fi
 
 if wget -q "$URL" -O "$FILE"; then
-    echoLOG g "download Omada Software Controller package"
+    EchoLog ok "download Omada Software Controller package"
   else
-    echoLOG r "download Omada Software Controller package"
+    EchoLog error "download Omada Software Controller package"
 fi
 
 if dpkg -i "$FILE" &> /dev/null; then
-  echoLOG g "install Omada Software Controller"
+  EchoLog ok "install Omada Software Controller"
 else
-  echoLOG r "install Omada Software Controller"
+  EchoLog error "install Omada Software Controller"
   exit 1
 fi
 
 if /opt/renew_certificate.sh &> /dev/null; then
-  echoLOG g "WebGUI secured with SSL certificate"
+  EchoLog ok "WebGUI secured with SSL certificate"
 else
-  echoLOG r "WebGUI secured with SSL certificate"
+  EchoLog error "WebGUI secured with SSL certificate"
 fi
 
 if ! tpeap status | grep -cw "not running" &>/dev/nul; then
-  echoLOG y "Omada SDN Controller is now installed!"
-  echoLOG no "Please visit the following URL to manage your devices:"
-  echoLOG no "https://${FullName}:8043"
-  echoLOG y "Have Fun :-)!"
+  EchoLog wait "Omada SDN Controller is now installed!"
+  EchoLog no "Please visit the following URL to manage your devices:"
+  EchoLog no "https://${FullName}:8043"
+  EchoLog wait "Have Fun :-)!"
 else
-  echoLOG r "Omada SDN Controller could not be installed :-(!"
+  EchoLog error "Omada SDN Controller could not be installed :-(!"
 fi
 
 exit 0
