@@ -44,6 +44,7 @@ rolelist=(\
   "dp" "      Docker Server with Proxy" \
   "mc" "      Mailcow Mailserver" \
   "mp" "      MailPiler Mailarchiv" \
+  "nb" "      NetBox" \
   "om" "      TP-Link Omada Software Controller" \
   "ww" "      Webserver based on NGINX with Let's Encrypt" \
   "no" "      Exit" \
@@ -291,6 +292,21 @@ if $ConfigRole; then
     # MailPiler Mailarchiv
     if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mp.sh); then
       EchoLog ok "${lang_mailarchiv_configok}"
+    else
+      EchoLog error "${lang_serverrole_configerror}"
+      if rm -rf "/opt/*"; then
+        EchoLog ok "${lang_serverrole_configundo_ok}"
+      else
+        EchoLog error "${lang_serverrole_configundo_error}"
+      fi
+    fi
+    CleanupAll
+    EchoLog info "${lang_goodbye}"
+    exit 0
+  elif [[ $ServerRole == "nb" ]]; then
+    # Netbox
+    if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/nb.sh); then
+      EchoLog ok "${lang_netbox_configok}"
     else
       EchoLog error "${lang_serverrole_configerror}"
       if rm -rf "/opt/*"; then
