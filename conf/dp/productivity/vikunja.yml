@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    container_name: Vikunja-DB
+    hostname: vikunja-db
+    volumes:
+      - db:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: vikunja
+      POSTGRES_USER: vikunjauser
+      POSTGRES_PASSWORD: vikunjapass
+    restart: unless-stopped
+
+  api:
+    image: vikunja/api:latest
+    container_name: Vikunja-API
+    hostname: vikunja-api
+    ports:
+      - 3456:3456
+    volumes:
+      - data:/app/vikunja/files:rw
+    environment:
+      PUID: 1026
+      PGID: 100
+      VIKUNJA_MAILER_ENABLED: true
+      VIKUNJA_MAILER_HOST: smtp.gmail.com
+      VIKUNJA_MAILER_PORT: 587
+      VIKUNJA_MAILER_SKIPTLSVERIFY: false
+      VIKUNJA_MAILER_AUTHTYPE: login
+      VIKUNJA_MAILER_USERNAME: Your-own-gmail-address
+      VIKUNJA_MAILER_PASSWORD: Your-own-app-password
+      VIKUNJA_MAILER_FROMEMAIL: Your-own-gmail-address
+      VIKUNJA_DATABASE_HOST: vikunja-db
+      VIKUNJA_DATABASE_PASSWORD: vikunjapass
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_USER: vikunjauser
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_SERVICE_JWTSECRET: MariushostingMariushostingMari13
+      VIKUNJA_SERVICE_TIMEZONE: Europe/Bucharest
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.yourname.synology.me/
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: true
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: vikunja/frontend:latest
+    container_name: Vikunja-FRONTEND
+    hostname: vikunja-frontend
+    ports:
+      - 4441:80
+    environment:
+      PUID: 1026
+      PGID: 100
+      VIKUNJA_API_URL: https://vikunjaapi.yourname.synology.me/api/v1
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_started
