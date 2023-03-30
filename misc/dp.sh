@@ -74,7 +74,7 @@ done
 ##  P R O X Y   F O R   D C  ##
 ###############################
 ports=""
-if [ ! -d "/opt/npm/" ] || [ ! -d "/opt/traefik/" ]; then
+if [ ! -d "/opt/npm/" ] && [ ! -d "/opt/traefik/" ]; then
   InstallProxy=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectproxyinstall_title^^} " "\n${lang_selectserverrole_message}" 20 80 10 "${proxylist[@]}" 3>&1 1>&2 2>&3)
 
   # Load needed Docker files
