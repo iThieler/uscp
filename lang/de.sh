@@ -62,8 +62,7 @@ lang_logfilepath="Die LOG-Datei liegt im Root-Verzeichnis"
 lang_selectproxyinstall_title="Proxy"
 lang_selectproxyinstall_message="Wähle den Proxy, mit dem gearbeitet werden soll, um auf die verschiedenen Docker Container weiterzuleiten."
 lang_containerstarted="Der ausgewählte Container wurde erfolgreich gestartet. Die folgenden Ports müssen freigegeben werden:"
-lang_containernotstarted="Der ausgewählte Container konnte nicht gestartet
-werden."
+lang_containernotstarted="Der ausgewählte Container konnte nicht gestartet werden."
 
 #######################################
 ##        M I S C / D T . S H        ##
@@ -114,6 +113,11 @@ lang_netbox_loadcontainerok="Netbox erfolgreich heruntergeladen"
 lang_netbox_loadcontainererror="Netbox konnte nicht heruntergeladen werden"
 lang_netbox_startcontainerok="Netbox erfolgreich gestartet"
 lang_netbox_startcontainererror="Netbox konnte nicht gestartet werden"
+lang_betbox_restartafterconfig="Neustart nach Konfigurationsanpassung"
+lang_netbox_infotext="Die automatisch erstellten SuperUser Daten können ind er Datei /opt/netbox-docker/docker-compose.override.yml geändert werden, und lauten"
+lang_netbox_infotext_api="SuperUser API-Schlüssel:"
+lang_netbox_infotext_name="SuperUser Name:        "
+lang_netbox_infotext_pass="SuperUser-Passwort:    "
 
 #######################################
 ##        M I S C / O M . S H        ##
