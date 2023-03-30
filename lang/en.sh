@@ -113,6 +113,11 @@ lang_netbox_loadcontainerok="Netbox downloaded successfully"
 lang_netbox_loadcontainererror="Netbox could not be downloaded"
 lang_netbox_startcontainerok="Netbox successfully started"
 lang_netbox_startcontainererror="Netbox could not be started"
+lang_betbox_restartafterconfig="Restart after configuration adjustment"
+lang_netbox_infotext="The automatically created SuperUser data can be changed in the file /opt/netbox-docker/docker-compose.override.yml, and are"
+lang_netbox_infotext_api="SuperUser API-Key:  "
+lang_netbox_infotext_name="SuperUser Name:    "
+lang_netbox_infotext_pass="SuperUser Password:"
 
 #######################################
 ## M I S C / O M . S H ##
