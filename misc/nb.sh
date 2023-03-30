@@ -11,7 +11,7 @@ var_netbox_override="/opt/netbox-docker/docker-compose.override.yml"
 # Load functions/updates and strt this script
 source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
-apt-get update >/dev/null 2>&1 && echo; MailcowLogo; echo
+apt-get update >/dev/null 2>&1 && echo; NetboxLogo; echo
 if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
 
 # Install Software dependencies 
@@ -69,6 +69,10 @@ else
 fi
 
 # Netbox override file
+SuperUserAPI="$(GenerateAPIKey 32)"
+SuperUserName="$(GenerateUserName 8)"
+SuperUserPass="$(GeneratePassword 22)"
+
 cat > "$var_netbox_override" <<EOF
 version: '3.4'
 services:
@@ -78,27 +82,33 @@ services:
     # If you want the Nginx unit status page visible from the
     # outside of the container add the following port mapping:
     # - "8001:8081"
-    # healthcheck:
+    healthcheck:
       # Time for which the health check can fail after the container is started.
       # This depends mostly on the performance of your database. On the first start,
       # when all tables need to be created the start_period should be higher than on
       # subsequent starts. For the first start after major version upgrades of NetBox
       # the start_period might also need to be set higher.
       # Default value in our docker-compose.yml is 60s
-      # start_period: 90s
+      start_period: 180s
     environment:
       SKIP_SUPERUSER: "false"
-      SUPERUSER_API_TOKEN: "$(GenerateAPIKey 32)"
+      SUPERUSER_API_TOKEN: "${SuperUserAPI}"
       SUPERUSER_EMAIL: "${MailServerTo}"
-      SUPERUSER_NAME: "$(GenerateUserName 8)"
-      SUPERUSER_PASSWORD: "$(GeneratePassword 22)"
+      SUPERUSER_NAME: "${SuperUserName}"
+      SUPERUSER_PASSWORD: "${SuperUserPass}"
 EOF
 
 # Load and start Netbox Container
 cd "/opt/netbox-docker/"
 EchoLog wait "${lang_netbox_loadcontainerwait}"
-if docker compose pull; then
+if docker compose pull >/dev/null 2>&1; then
   EchoLog ok "${lang_netbox_loadcontainerok}"
+  if docker compose stop >/dev/null 2>&1; then
+    sed -i "s/healthcheck:.*/# healthcheck:/" $var_netbox_override
+    sed -i "s/start_period:.*/# start_period: 90s/" $var_netbox_override
+    EchoLog wait "${lang_betbox_restartafterconfig}"
+    docker compose up --wait
+  fi
 else
   EchoLog error "${lang_netbox_loadcontainererror}"
   exit 1
@@ -113,6 +123,8 @@ fi
 cd "/root/"
 
 EchoLog info "${lang_netbox_infotext}:"
-EchoLog no "docker compose exec netbox /opt/netbox/netbox/manage.py createsuperuser"
+EchoLog no "${lang_netbox_infotext_api} ${SuperUserAPI}"
+EchoLog no "${lang_netbox_infotext_name} ${SuperUserName}"
+EchoLog no "${lang_netbox_infotext_pass} ${SuperUserPass}"
 
 exit 0
