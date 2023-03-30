@@ -106,6 +106,7 @@ fi
 #######################################
 ##  D O C K E R   C O N T A I N E R  ##
 #######################################
+InstallContainer=""
 function containerinstall() {
   InstallContainer=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectcontainer_title^^} " "\n${lang_selectcontainer_message}" 20 80 10 "${containerlist[@]}" 3>&1 1>&2 2>&3)
 
@@ -198,6 +199,7 @@ function containerinstall() {
 }
 
 while [ containerinstall ]; do
+  InstallContainer=""
   EchoLog ok "${lang_containerstarted}"
   EchoLog no "${ports}"
 done
