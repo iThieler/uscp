@@ -105,6 +105,17 @@ lang_mailcow_startcontainererror="Mailcow konnte nicht gestartet werden"
 
 
 #######################################
+##        M I S C / N B . S H        ##
+#######################################
+lang_netbox_gitclone_ok="Netbox Repository erfolgreich geklont"
+lang_netbox_gitclone_error="Netbox konnt nicht von github.com bezogen werden"
+lang_netbox_loadcontainerwait="Die benötigten Container werden geladen"
+lang_netbox_loadcontainerok="Netbox erfolgreich heruntergeladen"
+lang_netbox_loadcontainererror="Netbox konnte nicht heruntergeladen werden"
+lang_netbox_startcontainerok="Netbox erfolgreich gestartet"
+lang_netbox_startcontainererror="Netbox konnte nicht gestartet werden"
+
+#######################################
 ##        M I S C / O M . S H        ##
 #######################################
 # Checkups
