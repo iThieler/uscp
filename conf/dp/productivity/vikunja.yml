@@ -5,7 +5,7 @@ services:
     container_name: Vikunja-DB
     hostname: vikunja-db
     volumes:
-      - db:/var/lib/postgresql/data:rw
+      - ./db:/var/lib/postgresql/data:rw
     environment:
       POSTGRES_DB: vikunja
       POSTGRES_USER: vikunjauser
@@ -19,7 +19,7 @@ services:
     ports:
       - 3456:3456
     volumes:
-      - data:/app/vikunja/files:rw
+      - ./data:/app/vikunja/files:rw
     environment:
       PUID: 1026
       PGID: 100
