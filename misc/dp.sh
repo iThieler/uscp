@@ -107,9 +107,9 @@ fi
 InstallContainer=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectcontainer_title^^} " "\n${lang_selectcontainer_message}" 20 80 10 "${containerlist[@]}" 3>&1 1>&2 2>&3)
 
 if [[ "$InstallContainer" == "por" ]]; then
-  mkdir -p /opt/protainer/ > /dev/null 2>&1
-  wget -qO /opt/protainer/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/manager/portainer.yml?raw=true
-  cd /opt/protainer/
+  mkdir -p /opt/portainer/ > /dev/null 2>&1
+  wget -qO /opt/portainer/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/manager/portainer.yml?raw=true
+  cd /opt/portainer/
   ports="Portainer: TCP 9000, TCP 9943"
   # Start Docker container
   if docker compose up -d --wait > /dev/null 2>&1; then
