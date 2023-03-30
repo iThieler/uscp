@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:10.8-jammy
+    container_name: OrangeHRM-db
+    hostname: orangehrm-db
+    mem_limit: 512m
+    mem_reservation: 128m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -P 3306 -prootpass | grep 'mysqld is alive' || exit 1"]
+    volumes:
+      - /volume1/docker/orangehrm/db:/var/lib/mysql:rw
+    environment:
+      PUID: 1026
+      PGID: 100
+      TZ: Europe/Bucharest
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: orangehrm
+      MYSQL_USER: orangeuser
+      MYSQL_PASSWORD: orangepass
+    restart: on-failure:5
+
+  orangehrm:
+    image: orangehrm/orangehrm:latest
+    container_name: OrangeHRM
+    hostname: orangehrm
+    mem_limit: 1g
+    mem_reservation: 128m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: curl -f http://localhost || exit 1
+    ports:
+      - 8797:80
+    volumes:
+      - /volume1/docker/orangehrm/data:/orangehrm:rw
+    environment:
+      PUID: 1026
+      PGID: 100
+      ORANGEHRM_DATABASE_HOST: orangehrm-db
+      ORANGEHRM_DATABASE_USER: orangeuser
+      ORANGEHRM_DATABASE_PASSWORD: orangepass
+      ORANGEHRM_DATABASE_NAME: orangehrm
+    restart: on-failure:5
+    depends_on:
+      db:
+        condition: service_healthy
