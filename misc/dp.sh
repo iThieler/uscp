@@ -106,7 +106,6 @@ fi
 #######################################
 ##  D O C K E R   C O N T A I N E R  ##
 #######################################
-InstallContainer=""
 function containerinstall() {
   InstallContainer=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" --title " ${lang_selectcontainer_title^^} " "\n${lang_selectcontainer_message}" 20 80 10 "${containerlist[@]}" 3>&1 1>&2 2>&3)
 
@@ -117,10 +116,10 @@ function containerinstall() {
     ports="Portainer: TCP 9000, TCP 9943"
     # Start Docker container
     if docker compose up -d; then
-      return 0
+      containerinstall
     else
       EchoLog error "${lang_containernotstarted}"
-      return 1
+      exit 1
     fi
   elif [[ "$InstallContainer" == "yac" ]]; then
     mkdir -p /opt/protainer/ > /dev/null 2>&1
@@ -129,10 +128,10 @@ function containerinstall() {
     ports="Yacht: TCP 8000"
     # Start Docker container
     if docker compose up -d; then
-      return 0
+      containerinstall
     else
       EchoLog error "${lang_containernotstarted}"
-      return 1
+      exit 1
     fi
   elif [[ "$InstallContainer" == "wud" ]]; then
     mkdir -p /opt/protainer/ > /dev/null 2>&1
@@ -141,10 +140,10 @@ function containerinstall() {
     ports="Whats up Docker: TCP 3000"
     # Start Docker container
     if docker compose up -d; then
-      return 0
+      containerinstall
     else
       EchoLog error "${lang_containernotstarted}"
-      return 1
+      exit 1
     fi
   elif [[ "$InstallContainer" == "ora" ]]; then
     mkdir -p /opt/orangehrm/ > /dev/null 2>&1
@@ -153,10 +152,10 @@ function containerinstall() {
     ports="Orange HRM: TCP 3000"
     # Start Docker container
     if docker compose up -d; then
-      return 0
+      containerinstall
     else
       EchoLog error "${lang_containernotstarted}"
-      return 1
+      exit 1
     fi
   elif [[ "$InstallContainer" == "vik" ]]; then
     mkdir -p /opt/vikunja/ > /dev/null 2>&1
@@ -185,23 +184,19 @@ function containerinstall() {
     ports="Vikunja: TCP 4441"
     # Start Docker container
     if docker compose up -d; then
-      return 0
+      containerinstall
     else
       EchoLog error "${lang_containernotstarted}"
-      return 1
+      exit 1
     fi
   elif [[ "$InstallContainer" == "Q" ]]; then
     exit 0
   else
-    EchoLog error ""
+    EchoLog error "Fehlerhafte eingabe"
     exit 1
   fi
 }
 
-while [ containerinstall ]; do
-  InstallContainer=""
-  EchoLog ok "${lang_containerstarted}"
-  EchoLog no "${ports}"
-done
+containerinstall
 
 exit 0
