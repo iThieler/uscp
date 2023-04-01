@@ -12,7 +12,8 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -P 3306 -prootpass | grep 'mysqld is alive' || exit 1"]
     volumes:
-      - /volume1/docker/orangehrm/db:/var/lib/mysql:rw
+      - ./db:/var/lib/mysql:rw
+      - /etc/localtime:/etc/localtime:ro
     environment:
       PUID: 1026
       PGID: 100
@@ -37,7 +38,8 @@ services:
     ports:
       - 8797:80
     volumes:
-      - /volume1/docker/orangehrm/data:/orangehrm:rw
+      - ./data:/orangehrm:rw
+      - /etc/localtime:/etc/localtime:ro
     environment:
       PUID: 1026
       PGID: 100
