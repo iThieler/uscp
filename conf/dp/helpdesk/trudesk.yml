@@ -15,7 +15,7 @@ services:
       TD_MONGODB_SERVER: mongo
       TD_MONGODB_DATABASE: trudesk
       ELATICSEARCH_URI: http://elasticsearch:9200
-      TZ: Romania/Bucharest
+      TZ: Romania/Berlin
     volumes:
       - ./uploads:/usr/src/trudesk/public/uploads
       - ./backups:/usr/src/trudesk/backups
@@ -34,13 +34,8 @@ services:
     image: elasticsearch:8.0.0
     container_name: Trudesk-Elasticsearch
     restart: always
-    environment:
-      xpack.security.enabled: false
-      xpack.security.http.ssl.enabled: false
-      node.name: estrudesk01
-      cluster.initial_master_nodes: estrudesk01
-      discovery.seed_hosts: estrudesk01
-      bootstrap.memory_lock: true
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data
     mem_limit: 1073741824
     ulimits:
       memlock:
@@ -49,5 +44,10 @@ services:
     ports:
       - 9200:9200
       - 9300:9300
-    volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      xpack.security.enabled: false
+      xpack.security.http.ssl.enabled: false
+      node.name: estrudesk01
+      cluster.initial_master_nodes: estrudesk01
+      discovery.seed_hosts: estrudesk01
+      bootstrap.memory_lock: true
