@@ -2,23 +2,24 @@ version: '3'
 services:
   db:
     image: mysql:5.7
+    restart: always
     volumes:
       - ./uvdeskdb:/var/lib/mysql
-    restart: always
     environment:
       MYSQL_DATABASE: uvdesk
       MYSQL_ROOT_PASSWORD: mariushosting
       MYSQL_USER: uvdesk
       MYSQL_PASSWORD: mariushosting
+
   uvdesk:
     image: nuttcorp/uvdesk:latest
-    depends_on:
-      - db
+    ports:
+        - 6744:80
     tty: true
     environment:
         MYSQL_USER: uvdesk
         MYSQL_PASSWORD: mariushosting
         MYSQL_ROOT_PASSWORD: mariushosting
         MYSQL_DATABASE: uvdesk
-    ports:
-        - 6744:80
+    depends_on:
+      - db
