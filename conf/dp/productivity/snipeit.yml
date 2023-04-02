@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:jammy
+    container_name: SNIPE-IT-DB
+    security_opt:
+      - no-new-privileges:true
+    hostname: db
+    healthcheck:
+     test: ["CMD-SHELL", "mysqladmin ping -prootpass | grep 'mysqld is alive' || exit 1"]
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: snipe
+      MYSQL_USER: snipe
+      MYSQL_PASSWORD: snipe
+      TZ: Europe/Bucharest
+    restart: on-failure:5
+      
+  snipeit:
+    image: lscr.io/linuxserver/snipe-it:latest
+    container_name: SNIPE-IT
+    restart: on-failure:5
+    healthcheck:
+      test: curl -f http://localhost:80/ || exit 1
+    depends_on:
+      - db
+    volumes:
+      - ./config:/config:rw
+    environment:
+      APP_LOCALE: de
+      APP_TIMEZONE: Europe/Bucharest
+      APP_URL: https://snipeit.yourname.synology.me
+      NGINX_APP_URL: https://snipeit.yourname.synology.me
+      MYSQL_PORT_3306_TCP_ADDR: db
+      MYSQL_PORT_3306_TCP_PORT: 3306
+      MYSQL_DATABASE: snipe
+      MYSQL_USER: snipe
+      MYSQL_PASSWORD: snipe
+      PGID: 1026
+      PUID: 100
+      MAIL_PORT_587_TCP_ADDR: smtp.gmail.com
+      MAIL_PORT_587_TCP_PORT: 587
+      MAIL_ENV_FROM_ADDR: Your-own-gmail-address
+      MAIL_ENV_FROM_NAME: Your-own-gmail-address
+      MAIL_ENV_ENCRYPTION: TLS
+      MAIL_ENV_USERNAME: Your-own-gmail-address
+      MAIL_ENV_PASSWORD: Your-own-app-password
+    ports:
+      - 1339:80
