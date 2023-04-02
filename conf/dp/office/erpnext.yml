@@ -1,0 +1,297 @@
+version: "3.9"
+services:
+  redis-queue:
+    image: redis
+    container_name: ERPNext-REDIS-QUEUE
+    hostname: redis-queue
+    mem_limit: 256m
+    mem_reservation: 50m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ./redis-queue:/data:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+
+  redis-cache:
+    image: redis
+    container_name: ERPNext-REDIS-CACHE
+    hostname: redis-cache
+    mem_limit: 256m
+    mem_reservation: 50m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ./redis-cache:/data:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+
+  redis-socketio:
+    image: redis
+    container_name: ERPNext-REDIS-SOCKETIO
+    hostname: redis-socketio
+    mem_limit: 256m
+    mem_reservation: 50m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ./redis-socketio:/data:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+
+  db:
+    image: mariadb:10.8-jammy
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    container_name: ERPNext-DB
+    hostname: erpnext-db
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -u root -prootpass | grep 'mysqld is alive' || exit 1"]
+    volumes:
+      - ./db:/var/lib/mysql:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    restart: on-failure:5
+
+  configurator:
+    image: frappe/erpnext:latest
+    entrypoint:
+      - bash
+      - -c
+    command:
+      - >
+        ls -1 apps > sites/apps.txt;
+        bench set-config -g db_host erpnext-db;
+        bench set-config -gp db_port 3306;
+        bench set-config -g redis_cache "redis://redis-cache";
+        bench set-config -g redis_queue "redis://redis-queue";
+        bench set-config -g redis_socketio "redis://redis-socketio";
+        bench set-config -gp socketio_port 9000;
+    container_name: ERPNext-CONFIGURATOR
+    hostname: configurator
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      DB_HOST: erpnext-db
+      DB_PORT: 3306
+      REDIS_CACHE: redis-cache
+      REDIS_QUEUE: redis-queue
+      REDIS_SOCKETIO: redis-socketio
+      SOCKETIO_PORT: 9000
+    restart: "no"
+    depends_on:
+      redis-queue:
+        condition: service_healthy
+      redis-cache:
+        condition: service_healthy
+      redis-socketio:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  backend:
+    image: frappe/erpnext:latest
+    container_name: ERPNext-BACKEND
+    hostname: backend
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  websocket:
+    image: frappe/erpnext:latest
+    command:
+      - node
+      - /home/frappe/frappe-bench/apps/frappe/socketio.js
+    container_name: ERPNext-WEBOSCKET
+    hostname: websocket
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  create-site:
+    image: frappe/erpnext:latest
+    entrypoint:
+      - bash
+      - -c
+    command:
+      - >
+        wait-for-it -t 120 erpnext-db:3306;
+        wait-for-it -t 120 redis-cache:6379;
+        wait-for-it -t 120 redis-queue:6379;
+        wait-for-it -t 120 redis-socketio:6379;
+        export start=`date +%s`;
+        until [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".db_host // empty"` ]] && \
+          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && \
+          [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
+        do
+          echo "Waiting for sites/common_site_config.json to be created";
+          sleep 5;
+          if (( `date +%s`-start > 120 )); then
+            echo "could not find sites/common_site_config.json with required keys";
+            exit 1
+          fi
+        done;
+        echo "sites/common_site_config.json found";
+        bench new-site Frappe --no-mariadb-socket --mariadb-root-password=rootpass --admin-password=admin --install-app=erpnext --set-default;
+    container_name: ERPNext-CREATE-SITE
+    hostname: create-site
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: "no"
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  queue-default:
+    image: frappe/erpnext:latest
+    command: bench worker --queue default
+    container_name: ERPNext-QUEUE-DEFAULT
+    hostname: queue-default
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+ 
+  queue-long:
+    image: frappe/erpnext:latest
+    command: bench worker --queue long
+    container_name: ERPNext-QUEUE-LONG
+    hostname: queue-long
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+ 
+  queue-short:
+    image: frappe/erpnext:latest
+    command: bench worker --queue short
+    container_name: ERPNext-QUEUE-SHORT
+    hostname: queue-short
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+ 
+  scheduler:
+    image: frappe/erpnext:latest
+    command: bench schedule
+    container_name: ERPNext-SCHEDULER
+    hostname: scheduler
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    restart: on-failure:5
+    depends_on:
+      configurator:
+        condition: service_completed_successfully
+
+  frontend:
+    image: frappe/erpnext:latest
+    command:
+      - nginx-entrypoint.sh
+    container_name: ERPNext-FRONTEND
+    hostname: frontend
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 8345:8080
+    volumes:
+      - ./sites:/home/frappe/frappe-bench/sites:rw
+      - ./logs:/home/frappe/frappe-bench/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      BACKEND: backend:8000
+      FRAPPE_SITE_NAME_HEADER: Frappe
+      SOCKETIO: websocket:9000
+      UPSTREAM_REAL_IP_ADDRESS: 127.0.0.1
+      UPSTREAM_REAL_IP_HEADER: X-Forwarded-For
+      UPSTREAM_REAL_IP_RECURSIVE: "off"
+      PROXY_READ_TIMOUT: 120
+      CLIENT_MAX_BODY_SIZE: 50m
+    restart: on-failure:5
+    depends_on:
+      backend:
+        condition: service_started
+      websocket:
+        condition: service_started
