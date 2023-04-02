@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+    alexjustesen:
+        image: 'ghcr.io/alexjustesen/speedtest-tracker:latest'
+        container_name: speedtest
+        restart: always
+        volumes:
+            - '/volume1/docker/speedtest:/config'
+        ports:
+            - '8999:80'
+            - '8443:443'
+            - '8995:9000'
+        environment:
+            PUID: 1026
+            PGID: 100
