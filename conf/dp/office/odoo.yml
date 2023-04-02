@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    container_name: Odoo-DB
+    hostname: odoo-db
+    mem_limit: 512m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "odoouser"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    volumes:
+      - ./db:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoouser
+      POSTGRES_PASSWORD: odoopass
+    restart: on-failure:5
+
+  odoo:
+    image: odoo:16
+    container_name: Odoo
+    hostname: odoo
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    healthcheck:
+      test: curl -f http://localhost:8069/ || exit 1
+    ports:
+      - 8069:8069
+    volumes:
+      - ./web-data:/var/lib/odoo:rw
+      - ./addons:/mnt/extra-addons:rw
+      - ./config:/etc/odoo:rw   
+      # only need for special configurations
+      # https://github.com/odoo/docker/blob/master/14.0/odoo.conf
+    environment:
+      HOST: odoo-db
+      PORT: 5432
+      USER: odoouser
+      PASSWORD: odoopass
+    restart: on-failure:5
+    depends_on:
+      db:
+        condition: service_healthy
