@@ -1,0 +1,33 @@
+version: '3'
+networks:
+  rustdesk-net:
+    external: false
+services:
+  hbbs:
+    image: rustdesk/rustdesk-server
+    container_name: hbbs
+    restart: always
+    ports:
+      - 21115:21115
+      - 21116:21116
+      - 21116:21116/udp
+      - 21118:21118
+    command: hbbs -r yourname.synology.me:21117
+    volumes:
+      - ./rustdeskhbbs:/root
+    networks:
+      - rustdesk-net
+    depends_on:
+      - hbbr
+  hbbr:
+    image: rustdesk/rustdesk-server
+    container_name: hbbr
+    restart: always
+    ports:
+      - 21117:21117
+      - 21119:21119
+    command: hbbr
+    volumes:
+      - ./rustdeskhbbr:/root
+    networks:
+      - rustdesk-net
