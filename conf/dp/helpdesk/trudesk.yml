@@ -1,0 +1,53 @@
+version: '3'
+services:
+  trudesk:
+    image: polonel/trudesk
+    container_name: Trudesk
+    restart: always
+    ports:
+      - 8118:8118
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    environment:
+      NODE_ENV: production
+      TRUDESK_DOCKER: true
+      TD_MONGODB_SERVER: mongo
+      TD_MONGODB_DATABASE: trudesk
+      ELATICSEARCH_URI: http://elasticsearch:9200
+      TZ: Romania/Bucharest
+    volumes:
+      - ./uploads:/usr/src/trudesk/public/uploads
+      - ./backups:/usr/src/trudesk/backups
+  mongo:
+    image: mongo
+    container_name: Trudesk-DB
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo:/var/lib/mongo
+      - ./mongo:/data/configdb
+      - ./mongo:/data/db
+
+  elasticsearch:
+    image: elasticsearch:8.0.0
+    container_name: Trudesk-Elasticsearch
+    restart: always
+    environment:
+      xpack.security.enabled: false
+      xpack.security.http.ssl.enabled: false
+      node.name: estrudesk01
+      cluster.initial_master_nodes: estrudesk01
+      discovery.seed_hosts: estrudesk01
+      bootstrap.memory_lock: true
+    mem_limit: 1073741824
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data
