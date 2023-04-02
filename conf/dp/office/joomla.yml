@@ -1,0 +1,58 @@
+version: '3.9'
+services:
+  wordpress:
+    image: joomla
+    container_name: Joomla
+    hostname: joomla
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 8187:80
+    depends_on:
+      db:
+        condition: service_started
+      phpmyadmin:
+        condition: service_healthy
+    volumes:
+      - ./html:/var/www/html:rw
+      - ./php.ini:/usr/local/etc/php/php.ini:rw
+    environment:
+      JOOMLA_DB_HOST: db
+      JOOMLA_DB_USER: marius
+      JOOMLA_DB_PASSWORD: mariuspassword
+      JOOMLA_DB_NAME: mariushosting_db
+    restart: on-failure:5
+
+  db:
+    image: mariadb:jammy
+    container_name: Joomla-DB
+    security_opt:
+      - no-new-privileges:true
+    hostname: joomla-db
+    healthcheck:
+     test: ["CMD-SHELL", "mysqladmin ping -prootpass | grep 'mysqld is alive' || exit 1"]
+    environment:
+      MYSQL_DATABASE: mariushosting_db
+      MYSQL_USER: marius
+      MYSQL_PASSWORD: mariuspassword
+      MYSQL_ROOT_PASSWORD: rootpass
+      TZ: Europe/Berlin
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    restart: on-failure:5
+      
+  phpmyadmin:
+    image: phpmyadmin
+    hostname: joomla-phpmyadmin
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    container_name: Joomla-phpMyAdmin
+    depends_on:
+      db:
+        condition: service_started
+    ports:
+      - 2505:80
+    environment:
+     PMA_HOST: joomla-db
+     PMA_PORT: 3306
+    restart: on-failure:5
