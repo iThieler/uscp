@@ -1,5 +1,13 @@
 #!/bin/bash
 #######################################
+##            G L O B A L            ##
+#######################################
+lang_global_username="Benutzername"
+lang_global_password="Passwort"
+lang_global_adminuser="Welchen Benutzernamen soll der Adminbenutzer haben?"
+lang_global_registeruser="Administrator ist der erste registrierte Benutzer"
+
+#######################################
 ##          b e g i n . S H          ##
 #######################################
 # CHECKUPS
@@ -122,10 +130,6 @@ lang_netbox_infotext_pass="SuperUser-Passwort:    "
 #######################################
 ##        M I S C / O M . S H        ##
 #######################################
-# Checkups
-lang_omada_checkdnserror="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record"
-lang_omada_checkdnspublicerror="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record für öffentliche IPs"
-
 # Certbot
 lang_omada_gencertok="Let's Encrypt-Zertifikat wurde erstellt"
 lang_omada_gencerterror="Let's Encrypt-Zertifikat wurde erstellt"
@@ -180,6 +184,8 @@ lang_mailserver_needloginsecuretext="Benötigt der Mailserver eine Verschlüssel
 lang_checkip_title="IP-Adresse"
 lang_checkip_mainmessage="Die angegebene IP-Adresse ist nicht erreichbar. Bitte prüfen ..."
 lang_checkip_errormessage="Vorgang durch Benutzer abgebrochen, die IP-Adresse ist nicht erreichbar."
+lang_checkdns_error="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record"
+lang_checkdns_publiciperror="Dieses Skript unterstützt nur Domainnamen (FQDN) mit gültigem DNS-A und/oder DNS-AAAA Record für öffentliche IPs"
 lang_cleanupall_infomessage="Systembereinigung wird ausgeführt"
 lang_cleanupall_cleantempfolder="Bereinigung des TEMP-Ordners"
 lang_cleanupall_historydata="Bereinigung der Shell-Verlaufsdaten"
