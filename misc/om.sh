@@ -5,12 +5,12 @@ source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
 echo; OmadaLogo; echo
 
+if ! CheckDNS "${FullName}"; then exit 1; fi
+
 ################################
 ##      V A R I A B L E S     ##
 ################################
 var_certbot_cronfile="/opt/renew_certificate.sh"
-DNS_A=`dig +short $FullName A`
-DNS_AAAA=`dig +short $FullName AAAA`
 
 ################################
 ##   S C R I P T  L I S T S   ##
@@ -58,29 +58,6 @@ done
 
 mkdir /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64
 ln -s /usr/lib/jvm/java-11-openjdk-amd64/lib/server /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64/
-
-################################
-##       C H E C K U P S      ##
-################################
-# Check DNS-A and DNS-AAAA Record
-if [ -z "$DNS_A" ] && [ -z "$DNS_AAAA" ]; then EchoLog error "${lang_omada_checkdnserror}" && exit 1; fi
-
-# Check DNS-A for privat Network IP
-DNS_A_First=`echo $DNS_A | cut -d. -f1`
-DNS_A_Second=`echo $DNS_A | cut -d. -f2`
-if [ $DNS_A_First -eq 10 ] || [ $DNS_A_First -eq 127 ]; then
-  EchoLog error "${lang_omada_checkdnspublicerror}"
-  exit 1
-elif [ $DNS_A_First -eq 192 ] && [ $DNS_A_Second -eq 168 ]; then
-  EchoLog error "${lang_omada_checkdnspublicerror}"
-  exit 1
-elif [ $DNS_A_First -eq 169 ] && [ $DNS_A_Second -eq 254 ]; then
-  EchoLog error "${lang_omada_checkdnspublicerror}"
-  exit 1
-elif [ $DNS_A_First -eq 172 ] && [ $DNS_A_Second -ge 16 ] && [ $DNS_A_Second -le 31 ]; then
-  EchoLog error "${lang_omada_checkdnspublicerror}"
-  exit 1
-fi
 
 ###############################
 ##       C E R T B O T       ##
