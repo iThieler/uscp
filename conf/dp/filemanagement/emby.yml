@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+    embyserver:
+        image: emby/embyserver
+        container_name: emby
+        restart: always
+        volumes:
+            - ./config:/config
+            - ./tvshows:/tvshows
+            - ./music/:/music
+            - ./movies:/movies
+        ports:
+            - '1900:1900'
+            - '7359:7359'
+            - '8096:8096'
+            - '8920:8920'
+        environment:
+            UID: 1026
+            GID: 100
+            TZ: Europe/Berlin
