@@ -1,0 +1,62 @@
+version: '3.9'
+services:
+  mariadb:
+    image: mariadb:jammy
+    container_name: Nextcloud-DB
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=OFF
+    healthcheck:
+     test: ["CMD-SHELL", "mysqladmin ping -u root -prootpass | grep 'mysqld is alive' || exit 1"]
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    environment:
+      TZ: Europe/Berlin
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_PASSWORD: mariushosting
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      
+  redis:
+    image: redis
+    container_name: Nextcloud-REDIS
+    restart: on-failure:5
+    user: 1026:100
+    healthcheck:
+     test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ./redis:/data:rw
+    environment:
+      TZ: Europe/Bucharest
+      
+  nextcloud:
+    image: nextcloud
+    container_name: Nextcloud
+    restart: on-failure:5
+    ports:
+      - 8082:80
+    depends_on:
+      mariadb:
+       condition: service_started
+      redis:
+       condition: service_healthy
+    environment:
+      REDIS_HOST: Nextcloud-REDIS
+      NEXTCLOUD_TRUSTED_DOMAINS: nextcloud.yourname.synology.me 192.168.1.18
+      TRUSTED_PROXIES: nextcloud.yourname.synology.me 192.168.1.18
+      OVERWRITEHOST: nextcloud.yourname.synology.me
+      OVERWRITEPROTOCOL: https
+      MYSQL_PASSWORD: mariushosting
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_HOST: mariadb
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    volumes:
+      - ./html:/var/www/html:rw
+      - ./custom_apps:/var/www/html/custom_apps:rw
+      - ./config:/var/www/html/config:rw
+      - ./data:/var/www/html/data:rw
+      - ./themes:/var/www/html/themes:rw
