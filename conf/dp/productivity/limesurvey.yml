@@ -1,0 +1,44 @@
+version: '3.9'
+services: 
+  limesurvey:
+    image: acspri/limesurvey
+    container_name: Limesurvey
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 8785:80
+    environment:
+      LIMESURVEY_ADMIN_USER: marius
+      LIMESURVEY_ADMIN_PASSWORD: mariushosting
+      LIMESURVEY_ADMIN_NAME: Lixandru Marius Bogdan
+      LIMESURVEY_ADMIN_EMAIL: Your-own-email-address
+      LIMESURVEY_DB_HOST: limesurvey
+      LIMESURVEY_DB_NAME: limesurvey
+      LIMESURVEY_DB_USER: limesurvey
+      LIMESURVEY_DB_PASSWORD: limesurvey
+      TZ: Europe/Bucharest
+      BASE_URL: https://limesurvey.yourname.synology.me
+      PUBLIC_URL: https://limesurvey.yourname.synology.me
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./plugins:/var/www/html/plugins
+      - ./upload:/var/www/html/upload
+      - ./config:/var/www/html/application/config
+
+  db:
+    image: mariadb:jammy
+    container_name: Limesurvey-DB
+    hostname: limesurvey
+    healthcheck:
+     test: ["CMD-SHELL", "mysqladmin ping -P 3306 -prootpass | grep 'mysqld is alive' || exit 1"]
+    environment:
+      MYSQL_DATABASE: limesurvey
+      MYSQL_USER: limesurvey
+      MYSQL_PASSWORD: limesurvey
+      MYSQL_ROOT_PASSWORD: rootpass
+      TZ: Europe/Bucharest
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    restart: on-failure:5
