@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+    iobroker:
+        image: 'buanet/iobroker:latest'
+        container_name: iobroker
+        restart: always
+        volumes:
+            - ./data:/opt/iobroker
+        ports:
+            - '7234:8081'
