@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  check-mk-raw:
+    image: checkmk/check-mk-raw
+    container_name: checkmk
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./sites:/omd/sites
+    ports:
+      - 8722:5000
+    tmpfs: /opt/omd/sites/cmk/tmp:uid=1000,gid=1000
