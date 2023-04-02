@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+    db:
+        image: postgres
+        container_name: Joplin-DB
+        volumes:
+            - ./db:/var/lib/postgresql/data
+        ports:
+            - 5435:5432
+        restart: always
+        environment:
+            TZ: Europe/Berlin
+            POSTGRES_DB: joplin
+            POSTGRES_USER: joplin
+            POSTGRES_PASSWORD: joplin
+    app:
+        image: joplin/server:2.10.10-beta
+        container_name: Joplin
+        depends_on:
+            - db
+        ports:
+            - 22300:22300
+        restart: always
+        environment:
+            APP_PORT: 22300
+            APP_BASE_URL: https://joplin.yourname.synology.me
+            DB_CLIENT: pg
+            POSTGRES_HOST: db
+            POSTGRES_DATABASE: joplin
+            POSTGRES_USER: joplin
+            POSTGRES_PASSWORD: joplin
+            POSTGRES_PORT: 5432
+            MAX_TIME_DRIFT: 0
+            MAILER_ENABLED: 1
+            MAILER_HOST: smtp.gmail.com
+            MAILER_PORT: 587
+            MAILER_SECURITY: starttls
+            MAILER_AUTH_USER: Your-own-gmail-address
+            MAILER_AUTH_PASSWORD: Your-own-app-password
+            MAILER_NOREPLY_NAME: Your-own-gmail-address
+            MAILER_NOREPLY_EMAIL: Your-own-gmail-address
