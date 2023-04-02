@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     restart: always
     volumes:
-      - ./peppermintdb:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql/data
     environment: 
       POSTGRES_USER: peppermint
       POSTGRES_PASSWORD: peppermint
