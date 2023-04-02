@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/plex
+        container_name: plex
+        network_mode: host
+        restart: always
+        volumes:
+            - ./config:/config
+            - ./movies:/movies
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
+            VERSION: docker
+    tautulli:
+        image: ghcr.io/tautulli/tautulli
+        container_name: tautulli
+        network_mode: host
+        restart: always
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
+        volumes:
+            - ./tautulli/config:/config
