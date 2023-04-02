@@ -1,4 +1,12 @@
 #!/bin/bash
+# Load functions/updates and strt this script
+source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
+source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
+if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
+echo; MailcowLogo; echo
+
+if ! CheckDNS "${FullName}"; then exit 1; fi
+
 ################################
 ##      V A R I A B L E S     ##
 ################################
@@ -12,12 +20,6 @@ var_mailcow_mtasts="/opt/mailcow-dockerized/data/web/.well-known/mta-sts.txt"
 ################################
 ## B A S I C  S E T T I N G S ##
 ################################
-# Load functions/updates and strt this script
-source <(curl -s ${var_githubraw}/main/reqs/functions.sh)
-source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
-apt-get update >/dev/null 2>&1 && echo; MailcowLogo; echo
-if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
-
 # Install Software dependencies 
 for PACKAGE in lsb-release gnupg; do
   if CheckPackage "${PACKAGE}"; then
