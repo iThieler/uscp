@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/sabnzbd
+        container_name: sabnzbd
+        restart: always
+        volumes:
+            - ./config:/config
+            - ./downloads:/downloads
+            - ./downloads/incomplete:/incomplete-downloads
+        ports:
+            - '8775:8080'
+            - '9093:9090'
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
