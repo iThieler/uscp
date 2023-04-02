@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+    tasmoadmin:
+        image: ghcr.io/tasmoadmin/tasmoadmin
+        container_name: tasmoadmin
+        restart: always
+        volumes:
+            - ./data:/data/tasmoadmin
+        ports:
+            - '5119:80'
+        environment:
+            - TZ: Europe/Berlin
