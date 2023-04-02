@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/lidarr
+        container_name: lidarr
+        restart: always
+        volumes:
+            - ./config:/config
+        ports:
+            - '8686:8686'
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
