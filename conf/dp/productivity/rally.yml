@@ -1,0 +1,47 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    container_name: Rallly-DB
+    hostname: rallly-db
+    mem_limit: 512m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "rallly", "-U", "ralllyuser"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: rallly
+      POSTGRES_USER: ralllyuser
+      POSTGRES_PASSWORD: ralllypass
+    restart: on-failure:5
+
+  rallly:
+    image: lukevella/rallly:latest
+    container_name: Rallly
+    hostname: rallly
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+    ports:
+      - 9861:3000
+    environment:
+      DATABASE_URL: postgres://ralllyuser:ralllypass@rallly-db:5432/rallly
+      SECRET_PASSWORD: MariushostingMariushostingMari13
+      NEXT_PUBLIC_BASE_URL: https://rallly.yourname.synology.me
+      SUPPORT_EMAIL: Your-own-gmail-address
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USER: Your-own-gmail-address
+      SMTP_PWD: Your-own-app-password
+    restart: on-failure:5
+    depends_on:
+      db:
+        condition: service_started
