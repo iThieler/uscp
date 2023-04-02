@@ -1,11 +1,28 @@
-version: '3'
+version: '3.9'
 services:
   whatsupdocker:
     image: fmartinou/whats-up-docker
-    container_name: 'wud'
+    container_name: WUD
     restart: unless-stopped
-    ports:
-      - 3000:3000
+    mem_limit: 128m
+    mem_reservation: 50m
+    cpu_shares: 256
+    security_opt:
+      - no-new-privileges=true
+    read_only: true
     volumes:
+      - ./store:/store
       - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3555:3000
+    environment:
+     - WUD_TRIGGER_SMTP_GMAIL_HOST=smtp.gmail.com
+     - WUD_TRIGGER_SMTP_GMAIL_PORT=465
+     - WUD_TRIGGER_SMTP_GMAIL_USER=Your-own-gmail-address
+     - WUD_TRIGGER_SMTP_GMAIL_PASS=Your-own-app-password
+     - WUD_TRIGGER_SMTP_GMAIL_FROM=Your-own-gmail-address
+     - WUD_TRIGGER_SMTP_GMAIL_TO=Your-own-gmail-address
+     - WUD_TRIGGER_SMTP_GMAIL_TLS_ENABLED=true
+     - WUD_TRIGGER_SMTP_GMAIL_SIMPLETITLE=Container $${name} Update Available
+     - WUD_TRIGGER_SMTP_GMAIL_SIMPLEBODY=Container $${name} Can Be Updated From Version $${local} To Version $${remote}
