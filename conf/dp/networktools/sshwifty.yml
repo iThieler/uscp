@@ -1,0 +1,7 @@
+version: "3.3"
+services:
+    sshwifty:
+        image: niruix/sshwifty
+        container_name: sshwifty
+        restart: always
+        ports:
