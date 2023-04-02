@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/remmina
+        container_name: remmina
+        restart: always
+        volumes:
+            - './config:/config'
+        ports:
+            - '3144:3000'
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
