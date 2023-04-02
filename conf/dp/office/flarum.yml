@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb
+    container_name: Flarum-DB
+    environment:
+      MYSQL_ROOT_PASSWORD: mariushosting
+      MYSQL_DATABASE: flarum
+      MYSQL_USER: flarum
+      MYSQL_PASSWORD: mariushosting
+    volumes:
+      - ./db:/var/lib/mysql
+  flarum:
+    image: mondedie/flarum
+    container_name: Flarum
+    environment:
+      DEBUG: false
+      FORUM_URL: https://flarum.yourname.synology.me
+      DB_HOST: mariadb
+      DB_NAME: flarum
+      DB_USER: flarum
+      DB_PASS: mariushosting
+      DB_PREF: flarum_
+      DB_PORT: 3306
+      FLARUM_ADMIN_USER: Marius
+      FLARUM_ADMIN_PASS: mariushosting
+      FLARUM_ADMIN_MAIL: yourownemail@gmail.com
+    volumes:
+      - ./assets:/flarum/app/public/assets
+      - ./extensions:/flarum/app/extensions
+      - ./storagelogs:/flarum/app/storage/logs
+      - ./nginx:/etc/nginx/flarum
+    ports:
+      - 8444:8888
+    depends_on:
+      - mariadb
