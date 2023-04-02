@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/babybuddy
+        container_name: babybuddy
+        restart: always
+        volumes:
+            - ./babybuddy:/config
+        ports:
+            - '8141:8000'
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Bucharest
