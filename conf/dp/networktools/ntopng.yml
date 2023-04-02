@@ -1,0 +1,11 @@
+version: "3.8"
+services: 
+ ntopng:
+    image: ntop/ntopng
+    container_name: ntopng
+    hostname: ntopng
+    restart: always
+    volumes:
+      - ./ntopng:/var/lib/ntopng 
+    network_mode: host
+    command: --community
