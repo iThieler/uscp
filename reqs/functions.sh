@@ -2,7 +2,7 @@
 source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 
 ################################
-##        H E L P E R         ##
+##         L O G O S          ##
 ################################
 function HeaderLogo() {
   # This function clears the shell prompt and displays the logo with the selected message
@@ -98,6 +98,9 @@ function NetboxLogo() {
   echo "----------" >> "${var_logfile}"
 }
 
+################################
+##        H E L P E R         ##
+################################
 function GeneratePassword() {
   # This function generates a random secure password with special characters that also work in Linux
   # ----------
@@ -180,6 +183,49 @@ function CheckIP() {
       return 1
     fi
   done
+
+  return 0
+}
+
+function CheckDNS() {
+  # This function checks if the specified fqdn exists with a valid
+  # DNS-A or DNS-AAAA entry, and the stored IP is a public and not
+  # a private IP address. This ensures that the server is publicly
+  # accessible. Needed e.g. by a mail server.
+  # ----------
+  # Call with: CheckDNS "sub.domain.tld"
+  # ----------
+  ipv4=$(dig +short $1 A)
+  ipv6=$(dig +short $1 AAAA)
+
+  # Check DNS-A and DNS-AAAA Record
+  if [ -z "$ipv4" ] && [ -z "$ipv6" ]; then
+    EchoLog error "${lang_checkdns_error}"
+    return 1
+  fi
+
+  # Check DNS-A for privat Network IPv4
+  ipv4_firstblock=`echo $ipv4 | cut -d. -f1`
+  ipv4_secondblock=`echo $ipv4 | cut -d. -f2`
+  if [ $ipv4_firstblock -eq 10 ] || [ $ipv4_firstblock -eq 127 ]; then
+    EchoLog error "${lang_checkdns_publiciperror}"
+    return 1
+  elif [ $ipv4_firstblock -eq 192 ] && [ $ipv4_secondblock -eq 168 ]; then
+    EchoLog error "${lang_checkdns_publiciperror}"
+    return 1
+  elif [ $ipv4_firstblock -eq 169 ] && [ $ipv4_secondblock -eq 254 ]; then
+    EchoLog error "${lang_checkdns_publiciperror}"
+    return 1
+  elif [ $ipv4_firstblock -eq 172 ] && [ $ipv4_secondblock -ge 16 ] && [ $ipv4_secondblock -le 31 ]; then
+    EchoLog error "${lang_checkdns_publiciperror}"
+    return 1
+  fi
+
+  # Check DNS-AAAA for privat Network IPv6
+  if [[ "${ipv6:0:2}" == "fc" ]] || [[ "${ipv6:0:2}" == "fd" ]]; then
+    EchoLog error "${lang_checkdns_publiciperror}"
+    return 1
+  fi
 
   return 0
 }
