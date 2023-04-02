@@ -1,0 +1,58 @@
+version: "3.9"
+services:
+  reduced-db:
+    image: postgres
+    container_name: Reduced-DB
+    hostname: reduced-db
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "reduced", "-U", "reduceduser"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    user: 1026:100
+    volumes:
+      - /volume1/docker/reducedb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: reduced
+      POSTGRES_USER: reduceduser
+      POSTGRES_PASSWORD: reducedpw
+
+  reduced-back:
+    image: ghcr.io/origranot/reduced.to/backend:master
+    container_name: Reduced-BACK
+    hostname: reduced-back
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 1026:100
+    environment:
+      APP_PORT: 3000
+      RATE_LIMIT_TTL: 60
+      RATE_LIMIT_COUNT: 10
+      FRONT_DOMAIN: http://reduced-front:5000
+      DATABASE_URL: postgresql://reduceduser:reducedpw@reduced-db:5432/reduced?schema=public
+      JWT_SECRET: MariushostingMariushostingMari13
+    depends_on:
+      reduced-db:
+        condition: service_started
+
+  reduced-front:
+    image: ghcr.io/origranot/reduced.to/frontend:master
+    container_name: Reduced-FRONT
+    hostname: reduced-front
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5000/ || exit 1
+    user: 1026:100
+    environment:
+      API_DOMAIN: http://reduced-back:3000
+    ports:
+      - 8302:5000
+    depends_on:
+      - reduced-back
+      - reduced-db
