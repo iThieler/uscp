@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+    amd64-hassio-supervisor:
+        image: 'homeassistant/amd64-hassio-supervisor:2023.03.2'
+        container_name: hassio_supervisor
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /var/run/dbus:/var/run/dbus
+            - ./data:/data
+        environment:
+            SUPERVISOR_SHARE: /volume1/docker/homeassistant
+            SUPERVISOR_NAME: hassio_supervisor
+            HOMEASSISTANT_REPOSITORY: homeassistant/qemux86-64-homeassistant
+        privileged: false
