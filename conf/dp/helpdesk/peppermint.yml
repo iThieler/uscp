@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: Peppermint-DB
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./peppermintdb:/var/lib/postgresql/data
+    environment: 
+      POSTGRES_USER: peppermint
+      POSTGRES_PASSWORD: peppermint
+      POSTGRES_DB: peppermint
+
+  client:
+    container_name: Peppermint
+    image: pepperlabs/peppermint:latest
+    restart: always
+    ports:
+      - 5006:5006
+    depends_on:
+      - postgres
+    environment:
+      PORT: 5006
+      DB_USERNAME: peppermint
+      DB_PASSWORD: peppermint
+      DB_HOST: postgres
+      BASE_URL: https://peppermint.yourname.synology.me
