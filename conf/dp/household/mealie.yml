@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+    mealie:
+        image: hkotel/mealie
+        container_name: mealie
+        restart: always
+        volumes:
+            - '/volume1/docker/mealie:/app/data'
+        ports:
+            - '9777:80'
+        environment:
+            TZ: Europe/Berlin
+            db_type: sqlite
