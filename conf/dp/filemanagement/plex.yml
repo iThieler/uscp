@@ -18,9 +18,9 @@ services:
         container_name: tautulli
         network_mode: host
         restart: always
+        volumes:
+            - ./tautulli/config:/config
         environment:
             PUID: 1026
             PGID: 100
             TZ: Europe/Berlin
-        volumes:
-            - ./tautulli/config:/config
