@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+    linuxserver:
+        image: ghcr.io/linuxserver/wireshark
+        container_name: wireshark
+        restart: always
+        ports:
+            - '3124:3000'
+        volumes:
+            - './config:/config'
+        environment:
+            PUID: 1026
+            PGID: 100
+            TZ: Europe/Berlin
