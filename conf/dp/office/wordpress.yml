@@ -1,0 +1,69 @@
+version: '3.9'
+services:
+  wordpress:
+    image: wordpress:php8.2
+    container_name: WordPress
+    hostname: wordpress
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 8181:80
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      phpmyadmin:
+        condition: service_healthy
+    volumes:
+      - ./html:/var/www/html:rw
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: marius
+      WORDPRESS_DB_PASSWORD: mariuspassword
+      WORDPRESS_DB_NAME: mariushosting_db
+    restart: on-failure:5
+
+  db:
+    image: mariadb:jammy
+    container_name: WordPress-DB
+    security_opt:
+      - no-new-privileges:true
+    hostname: wordpress-db
+    healthcheck:
+     test: ["CMD-SHELL", "mysqladmin ping -P 3306 -prootpass | grep 'mysqld is alive' || exit 1"]
+    environment:
+      MYSQL_DATABASE: mariushosting_db
+      MYSQL_USER: marius
+      MYSQL_PASSWORD: mariuspassword
+      MYSQL_ROOT_PASSWORD: rootpass
+      TZ: Europe/Bucharest
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    restart: on-failure:5
+
+  redis:
+    image: redis
+    hostname: wordpress-redis
+    container_name: WordPress-REDIS
+    user: 1026:100
+    healthcheck:
+     test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - ./redis:/data:rw
+    environment:
+      TZ: Europe/Bucharest
+    restart: on-failure:5
+      
+  phpmyadmin:
+    image: phpmyadmin
+    hostname: wordpress-phpmyadmin
+    healthcheck:
+     test: curl -f http://localhost:80/ || exit 1
+    container_name: WordPress-phpMyAdmin
+    ports:
+      - 2500:80
+    environment:
+     PMA_HOST: wordpress-db
+     PMA_PORT: 3306
+    restart: on-failure:5
