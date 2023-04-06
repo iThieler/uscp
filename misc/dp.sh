@@ -93,7 +93,7 @@ if [ ! -d "/opt/npm/" ] && [ ! -d "/opt/traefik/" ]; then
     mkdir -p /opt/traefik/ > /dev/null 2>&1
     wget -qO /opt/traefik/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/proxy/tra.yml?raw=true
     cd /opt/traefik/
-    ports="TCP 80, TCP 8080"
+    ports="TCP 80, TCP 443 TCP 8080"
   else
     EchoLog error ""
     exit 1
