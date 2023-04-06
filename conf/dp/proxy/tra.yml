@@ -1,25 +1,46 @@
-version: '3.3'
+version: "3.8"
+
 services:
   traefik:
-    image: 'traefik:v2.10'
-    container_name: 'traefik'
+    image: traefik:v2.9
+    container_name: traefik
     restart: always
     command:
-      #- "--log.level=DEBUG"
-      - '--api.insecure=true'
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.web.address=:80'
+      - "--api"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=traefik"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      # Avoids having to specify the resolver in each container with "traefik.http.routers.https.tls.certresolver=le"
+      - "--entrypoints.websecure.http.tls.certResolver=le"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=your@email.com"
+      - "--certificatesresolvers.le.acme.storage=/acme/acme.json"
     ports:
-      - '80:80'
-      - '8080:8080'
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    networks:
+      - traefik
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-  whoami:
-    image: 'traefik/whoami'
-    container_name: 'simple-service'
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./acme:/acme"
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`whoami.localhost`)
-      - traefik.http.routers.whoami.entrypoints=web
+      # Dashboard
+      - "traefik.http.routers.traefik.rule=Host(`traefik.example.com`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=admin"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.middlewares.admin.basicauth.users=userXY:pwXY"
+      # global redirect to https
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=web"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https"
+
+networks:
+  traefik:
+    name: traefik
