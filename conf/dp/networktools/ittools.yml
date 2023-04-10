@@ -5,4 +5,14 @@ services:
         container_name: it-tools
         restart: unless-stopped
         ports:
-            - '8080:80'
+            - '80:80'
+        lables:
+          - "traefik.enable=true"
+          - "traefik.http.routers.nginx.rule=Host(`docker.der-ithieler.cloud`)"
+        networks:
+          - traefik
+
+networks:
+  traefik:
+    external: true
+    name: traefik
