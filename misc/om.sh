@@ -56,8 +56,13 @@ for PACKAGE in openjdk-11-jre-headless jsvc curl certbot mongodb-org; do
   fi
 done
 
-mkdir /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64
-ln -s /usr/lib/jvm/java-11-openjdk-amd64/lib/server /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64/
+if [ $(dpkg --print-architecture) == "amd64" ]; then
+  mkdir /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64
+  ln -s /usr/lib/jvm/java-11-openjdk-amd64/lib/server /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64/
+elif [ $(dpkg --print-architecture) == "arm64" ]; then
+  mkdir /usr/lib/jvm/java-11-openjdk-arm64/lib/arm64
+  ln -s /usr/lib/jvm/java-11-openjdk-arm64/lib/server /usr/lib/jvm/java-11-openjdk-arm64/lib/arm64/
+fi
 
 ###############################
 ##       C E R T B O T       ##
