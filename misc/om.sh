@@ -5,7 +5,7 @@ source <(curl -s ${var_githubraw}/main/lang/${language}.sh)
 if [ -f "$var_answerfile" ]; then source "$var_answerfile"; fi
 echo; OmadaLogo; echo
 
-if ! CheckDNS "${FullName}"; then exit 1; fi
+#if ! CheckDNS "${FullName}"; then exit 1; fi
 
 ################################
 ##      V A R I A B L E S     ##
