@@ -61,7 +61,9 @@ if [ $(dpkg --print-architecture) == "amd64" ]; then
   ln -s /usr/lib/jvm/java-11-openjdk-amd64/lib/server /usr/lib/jvm/java-11-openjdk-amd64/lib/amd64/
 elif [ $(dpkg --print-architecture) == "arm64" ]; then
   mkdir /usr/lib/jvm/java-11-openjdk-arm64/lib/arm64
+  mkdir /usr/lib/jvm/java-11-openjdk-arm64/lib/aarch64
   ln -s /usr/lib/jvm/java-11-openjdk-arm64/lib/server /usr/lib/jvm/java-11-openjdk-arm64/lib/arm64/
+  ln -s /usr/lib/jvm/java-11-openjdk-arm64/lib/server /usr/lib/jvm/java-11-openjdk-arm64/lib/aarch64/
 fi
 
 ###############################
