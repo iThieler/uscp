@@ -74,6 +74,22 @@ if CheckPackage "postfix"; then
   fi
 fi
 
+#####################################
+## S O F T W A R E   I N S T A L L ##
+#####################################
+# Install Software dependencies 
+for PACKAGE in fail2ban curl gnupg git ca-certificates smartmontools; do
+  if CheckPackage "${PACKAGE}"; then
+    EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
+  else
+    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
+      EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
+    else
+      EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
+    fi
+  fi
+done
+
 ###############################
 ##        D O C K E R        ##
 ###############################
