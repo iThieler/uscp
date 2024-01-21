@@ -152,20 +152,20 @@ if ! $ConfigMailserverRole; then
       EchoLog error "postfix - ${lang_softwaredependencies_installfail}"
     fi
   fi
-fi
   
-# Install Software dependencies 
-for PACKAGE in fail2ban curl snapd gnupg git ca-certificates apticron smartmontools; do
-  if CheckPackage "${PACKAGE}"; then
-    EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
-  else
-    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
-      EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
+  # Install Software dependencies 
+  for PACKAGE in fail2ban curl snapd gnupg git ca-certificates apticron smartmontools; do
+    if CheckPackage "${PACKAGE}"; then
+      EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
     else
-      EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
+      if apt-get install -y $PACKAGE >/dev/null 2>&1; then
+        EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
+      else
+        EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
+      fi
     fi
-  fi
-done
+  done
+fi
 
 # Do a Full System update and upgrade if this is the Firstrun on this host
 EchoLog wait "${lang_updateupgrade_startup} >>> (apt-get update && apt-get upgrade)"
