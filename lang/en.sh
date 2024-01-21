@@ -23,7 +23,7 @@ lang_answerfile_found="Response file found and loaded"
 lang_answerfile_genrate_ok="Response file successfully created and saved"
 lang_answerfile_generate_error="Failed to generate answer file"
 lang_configmailserver_title="Server role/Mailserver"
-lang_configmailserver_message="Should this server be used as a mail server with Mailcow?"
+lang_configmailserver_messageyesno="Should this server be used as a mail server with Mailcow?"
 
 # STARTUP
 lang_change_timezone="Change timezone"
