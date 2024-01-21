@@ -23,7 +23,7 @@ lang_answerfile_found="Antwortdatei gefunden und geladen"
 lang_answerfile_genrate_ok="Antwortdatei erfolgreich erstellt und gespeichert"
 lang_answerfile_generate_error="Antwortdatei konnte nicht erstellt werden"
 lang_configmailserver_title="Serverrolle/Mailserver"
-lang_configmailserver_message="Soll dieser Server als MAilserver mit Mailcow genutzt werden?"
+lang_configmailserver_message="Soll dieser Server als Mailserver mit Mailcow genutzt werden?"
 
 # STARTUP
 lang_change_timezone="Ändere Zeitzone"
