@@ -1,5 +1,13 @@
 #!/bin/bash
 #######################################
+##            G L O B A L            ##
+#######################################
+lang_global_username="Username"
+lang_global_password="Password"
+lang_global_adminuser="Which user name should the admin user have?"
+lang_global_registeruser="Administrator is the first registered user"
+
+#######################################
 ## b e g i n . S H ##
 #######################################
 # CHECKUPS
