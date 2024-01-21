@@ -262,9 +262,7 @@ fi
 ###############################
 ##   S E R V E R   R O L E   ##
 ###############################
-#WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
-if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_title}" "${lang_configurationcompleted_messageyesno}"; then ConfigRole=true; fi
-
+# If a mail server role has been assigned to the server, Mailcow is installed and configured
 if $ConfigMailserverRole; then
   # Mailcow Mailserver
   if bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/misc/mc.sh); then
@@ -281,6 +279,9 @@ if $ConfigMailserverRole; then
   EchoLog info "${lang_goodbye}"
   exit 0
 fi
+
+#WhipMessage "${lang_configurationcompleted_title}" "${lang_configurationcompleted_message}"
+if WhipYesNo "${lang_btn_yes}" "${lang_btn_no}" "${lang_configurationcompleted_title}" "${lang_configurationcompleted_messageyesno}"; then ConfigRole=true; fi
 
 # Select Server Role
 if $ConfigRole; then
