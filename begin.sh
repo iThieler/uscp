@@ -85,7 +85,7 @@ if command -v pveversion >/dev/null 2>&1; then
 fi
 
 # Check OS is Debian 11 Bullseye or Ubuntu 20.04
-if [ $OSVersion == 11  ] || [ $OSVersion == "20.04" ]; then
+if [ $OSVersion == 11  ] || [ $OSVersion == "12" ] || [ $OSVersion == "20.04" ] || [ $OSVersion == "22.04" ]; then
   EchoLog ok "${lang_info_os_ok}"
 else
   AlertWhipMessage "${lang_erroros_title}" "${lang_erroros_message}"
