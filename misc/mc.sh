@@ -33,6 +33,47 @@ for PACKAGE in lsb-release gnupg; do
   fi
 done
 
+###################################
+## S O F T W A R E   D E L E T E ##
+###################################
+# Postfix
+if CheckPackage "postfix"; then
+  EchoLog wait "${lang_mailcow_postfix_deletewait}"
+  if service postfix stop; then
+    EchoLog ok "${lang_mailcow_postfix_stopok}"
+    BackupAndRestoreFile recover "/etc/aliases"
+    BackupAndRestoreFile recover "/etc/postfix/main.cf"
+    BackupAndRestoreFile recover "/etc/ssl/certs/ca-certificates.crt"
+    if [ -f "/etc/postfix/canonical" ]; then rm -f "/etc/postfix/canonical"; fi
+    if apt-get -y autoremove postfix >/dev/null 2>&1; then
+      EchoLog ok "${lang_mailcow_postfix_deleteok}"
+    else
+      EchoLog error "${lang_mailcow_postfix_deleteerror}"
+      exit 1
+    fi
+  else
+    EchoLog error "${lang_mailcow_postfix_stoperror}"
+    exit 1
+  fi
+fi
+
+# Exim4
+if CheckPackage "postfix"; then
+  EchoLog wait "${lang_mailcow_exim4_deletewait}"
+  if service exim4 stop; then
+    EchoLog ok "${lang_mailcow_exim4_stopok}"
+    if apt-get -y autoremove exim4-* >/dev/null 2>&1; then
+      EchoLog ok "${lang_mailcow_exim4_deleteok}"
+    else
+      EchoLog error "${lang_mailcow_exim4_deleteerror}"
+      exit 1
+    fi
+  else
+    EchoLog error "${lang_mailcow_exim4_stoperror}"
+    exit 1
+  fi
+fi
+
 ###############################
 ##        D O C K E R        ##
 ###############################
@@ -62,30 +103,6 @@ for PACKAGE in apparmor docker-ce docker-ce-cli containerd.io docker-buildx-plug
     fi
   fi
 done
-
-###################################
-## S O F T W A R E   D E L E T E ##
-###################################
-# Postfix
-if CheckPackage "postfix"; then
-  EchoLog wait "${lang_mailcow_postfix_deletewait}"
-  if service postfix stop; then
-    EchoLog ok "${lang_mailcow_postfix_stopok}"
-    BackupAndRestoreFile recover "/etc/aliases"
-    BackupAndRestoreFile recover "/etc/postfix/main.cf"
-    BackupAndRestoreFile recover "/etc/ssl/certs/ca-certificates.crt"
-    if [ -f "/etc/postfix/canonical" ]; then rm -f "/etc/postfix/canonical"; fi
-    if apt-get -y autoremove postfix >/dev/null 2>&1; then
-      EchoLog ok "${lang_mailcow_postfix_deleteok}"
-    else
-      EchoLog error "${lang_mailcow_postfix_deleteerror}"
-      exit 1
-    fi
-  else
-    EchoLog error "${lang_mailcow_postfix_stoperror}"
-    exit 1
-  fi
-fi
 
 ###############################
 ##       M A I L C O W       ##
