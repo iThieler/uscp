@@ -32,7 +32,7 @@ This multilingual script takes care of the startup tasks after installing a new 
   - TP-Link SDN (Omada Software Controller)
   - Web server (NGINX) with certbot for Let's Encrypt
  
-Run the following in the Shell after a fresh setup. ⚠️ **DEBIAN 11 (BULLSEYE) ONLY**
+Run the following in the Shell after a fresh setup. ⚠️ **DEBIAN 11/12 and Ubuntu 20.04/22.04 ONLY**
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/iThieler/uscp/main/begin.sh)
