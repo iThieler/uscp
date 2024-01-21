@@ -179,9 +179,16 @@ else
 fi
 
 # Redirect webmail.domain.tld to SOGo
-rm -f "$var_mailcow_index_php"
-if wget -qO "$var_mailcow_index_php" https://github.com/iThieler/uscp/blob/main/conf/mc/index.php.txt?raw=true; then
+#rm -f "$var_mailcow_index_php"
+#if wget -qO "$var_mailcow_index_php" https://github.com/iThieler/uscp/blob/main/conf/mc/index.php.txt?raw=true; then
+#  EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
+#else
+#  EchoLog error "${lang_mailcow_indexmodifiction_error}"
+#fi
+code_to_insert="\n\nif(substr(\$_SERVER['HTTP_HOST'], 0, strpos(\$_SERVER['HTTP_HOST'], '.')) == 'webmail') { header('Location: https://###DOMAIN###/SOGo/'); exit(); }"
+if sed -i "22i\\${code_to_insert}" "$var_mailcow_index_php"; then
   EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
+  sed -i "s|###DOMAIN###|${FullName}|g" "$var_mailcow_index_php"
 else
   EchoLog error "${lang_mailcow_indexmodifiction_error}"
 fi
