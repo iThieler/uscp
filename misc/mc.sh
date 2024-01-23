@@ -150,6 +150,7 @@ if wget -qO $var_mailcow_conf https://github.com/iThieler/uscp/blob/main/conf/mc
   sed -i "s/DBROOT=.*/DBROOT=$DBRoot/" $var_mailcow_conf
   sed -i "s/ADDITIONAL_SAN=.*/ADDITIONAL_SAN=$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
   sed -i "s/ADDITIONAL_SERVER_NAMES=.*/ADDITIONAL_SERVER_NAMES=$HostName.*,mta-sts.*,webmail.*/" $var_mailcow_conf
+  sed -i "s/#WATCHDOG_NOTIFY_EMAIL=/WATCHDOG_NOTIFY_EMAIL=/$MailServerTo" $var_mailcow_conf
 else
   EchoLog error "${lang_mailcow_getconf_error}"
   exit 1
@@ -179,13 +180,7 @@ else
 fi
 
 # Redirect webmail.domain.tld to SOGo
-#rm -f "$var_mailcow_index_php"
-#if wget -qO "$var_mailcow_index_php" https://github.com/iThieler/uscp/blob/main/conf/mc/index.php.txt?raw=true; then
-#  EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
-#else
-#  EchoLog error "${lang_mailcow_indexmodifiction_error}"
-#fi
-code_to_insert="\n\nif(substr(\$_SERVER['HTTP_HOST'], 0, strpos(\$_SERVER['HTTP_HOST'], '.')) == 'webmail') { header('Location: https://###DOMAIN###/SOGo/'); exit(); }"
+code_to_insert="nif(substr(\$_SERVER['HTTP_HOST'], 0, strpos(\$_SERVER['HTTP_HOST'], '.')) == 'webmail') {\n  header('Location: https://###DOMAIN###/SOGo/');\n  exit();\n}"
 if sed -i "22i\\${code_to_insert}" "$var_mailcow_index_php"; then
   EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
   sed -i "s|###DOMAIN###|${FullName}|g" "$var_mailcow_index_php"
