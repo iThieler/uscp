@@ -21,7 +21,7 @@ var_mailcow_mtasts="/opt/mailcow-dockerized/data/web/.well-known/mta-sts.txt"
 ## B A S I C  S E T T I N G S ##
 ################################
 # Install Software dependencies 
-for PACKAGE in lsb-release gnupg; do
+for PACKAGE in fail2ban curl lsb-release gnupg git ca-certificates smartmontools; do
   if CheckPackage "${PACKAGE}"; then
     EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
   else
@@ -58,7 +58,7 @@ if CheckPackage "postfix"; then
 fi
 
 # Exim4
-if CheckPackage "postfix"; then
+if CheckPackage "exim4-*"; then
   EchoLog wait "${lang_mailcow_exim4_deletewait}"
   if service exim4 stop; then
     EchoLog ok "${lang_mailcow_exim4_stopok}"
@@ -73,22 +73,6 @@ if CheckPackage "postfix"; then
     exit 1
   fi
 fi
-
-#####################################
-## S O F T W A R E   I N S T A L L ##
-#####################################
-# Install Software dependencies 
-for PACKAGE in fail2ban curl gnupg git ca-certificates smartmontools; do
-  if CheckPackage "${PACKAGE}"; then
-    EchoLog info "${PACKAGE} - ${lang_softwaredependencies_alreadyinstalled}"
-  else
-    if apt-get install -y $PACKAGE >/dev/null 2>&1; then
-      EchoLog ok "${PACKAGE} - ${lang_softwaredependencies_installok}"
-    else
-      EchoLog error "${PACKAGE} - ${lang_softwaredependencies_installfail}"
-    fi
-  fi
-done
 
 ###############################
 ##        D O C K E R        ##
