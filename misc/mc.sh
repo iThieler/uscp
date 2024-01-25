@@ -164,7 +164,7 @@ else
 fi
 
 # Redirect webmail.domain.tld to SOGo
-code_to_insert="nif(substr(\$_SERVER['HTTP_HOST'], 0, strpos(\$_SERVER['HTTP_HOST'], '.')) == 'webmail') {\n  header('Location: https://###DOMAIN###/SOGo/');\n  exit();\n}"
+code_to_insert="\nif(substr(\$_SERVER['HTTP_HOST'], 0, strpos(\$_SERVER['HTTP_HOST'], '.')) == 'webmail') {\n  header('Location: https://###DOMAIN###/SOGo/');\n  exit();\n}"
 if sed -i "22i\\${code_to_insert}" "$var_mailcow_index_php"; then
   EchoLog ok "${lang_mailcow_indexmodifiction_ok}"
   sed -i "s|###DOMAIN###|${FullName}|g" "$var_mailcow_index_php"
