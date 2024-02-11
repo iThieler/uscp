@@ -18,6 +18,7 @@ export var_color_yellow='\033[1;33m'
 # Script needed
 ConfigPostfix=false
 ConfigRole=false
+ConfigMailserverRole=false
 
 # Host
 export OS=$(. /etc/os-release; printf '%s\n' "$ID";)
@@ -59,7 +60,7 @@ export NEWT_COLORS_FILE="/root/.iThielers_NEWT_COLORS"
 
 # Set Firstrun Variable
 firstrun=true
-if [ -f "${var_logfile}" ]; then firstrun=false; fi
+if [ -f "${var_logfile}" ]; then firstrun=; fi
 
 # Set User/GUI Language by User input
 export language=$(whiptail --menu --nocancel --backtitle "${var_whipbacktitle}" "\nSelect your Language" 20 80 10 "${langlist[@]}" 3>&1 1>&2 2>&3)
@@ -184,7 +185,7 @@ if ! $ConfigMailserverRole; then
     BackupAndRestoreFile backup "/etc/aliases"
     BackupAndRestoreFile backup "/etc/postfix/main.cf"
     BackupAndRestoreFile backup "/etc/ssl/certs/ca-certificates.crt"
-    PostfixConfigured=false
+    PostfixConfigured=
   
     # Change Pistfix configuration to send E-Mails
     if grep "root:" /etc/aliases; then
