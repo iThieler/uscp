@@ -11,5 +11,5 @@ services:
     ports:
       - 5043:5000
     volumes:
-      - './remotely:/remotely-data'
+      - ./remotely:/remotely-data
     restart: on-failure:5
