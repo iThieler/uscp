@@ -7,6 +7,7 @@
 proxylist=(\
   "npm" "      NGINX Proxy Manager" \
   "tra" "      traefik" \
+  "no" "       keinen Proxy" \
 )
 
 containerlist=(\
@@ -94,6 +95,8 @@ if [ ! -d "/opt/npm/" ] && [ ! -d "/opt/traefik/" ]; then
     wget -qO /opt/traefik/docker-compose.yml https://github.com/iThieler/uscp/blob/main/conf/dp/proxy/tra.yml?raw=true
     cd /opt/traefik/
     ports="TCP 80, TCP 443 TCP 8080"
+  elif [[ "$InstallProxy" == "no" ]]; then
+    exit 0
   else
     EchoLog error ""
     exit 1
