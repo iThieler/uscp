@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+  db:
+    image: mariadb:jammy
+    container_name: Freescout-DB
+    hostname: freescout-db
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./db:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: freescoutuser
+      MYSQL_PASSWORD: freescoutpass
+      MYSQL_DATABASE: freescout
+      TZ: Europe/Bucharest
+    restart: on-failure:5
+
+  freescout:
+    image: ghcr.io/tiredofit/docker-freescout:latest
+    container_name: Freescout
+    hostname: freescout
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: curl -f http://localhost:80/ || exit 1
+    ports:
+      - 5135:80
+    volumes:
+      - ./data:/data:rw
+      - ./logs/:/www/logs:rw
+    environment:
+      ADMIN_EMAIL: youradmin@email
+      ADMIN_PASS: youradmin@pass
+      SITE_URL: https://freescout.yourname.synology.me
+      ENABLE_SSL_PROXY: true
+      DB_HOST: freescout-db
+      DB_NAME: freescout
+      DB_USER: freescoutuser
+      DB_PASS: freescoutpass
+    restart: on-failure:5
+    depends_on:
+      db:
+        condition: service_started
