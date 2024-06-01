@@ -33,5 +33,6 @@ services:
       SSL_CERT_NAME: tls.crt
       SSL_KEY_NAME: tls.key
 volumes:
-  omada-data:
-  omada-logs:
+  data:
+  logs:
+  work:
